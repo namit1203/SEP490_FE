@@ -126,7 +126,6 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div id="st_notification_sticky" style={{ marginTop: 0 }} />
       <div id="__next">
         <div
           id="wheelLoadingContainer"
@@ -3160,34 +3159,6 @@ const Home = () => {
          <Footer/>
         </div>
       </div>
-      <div id="criteo-tags-div" style={{ display: "none" }} />
-      <iframe
-        allow="join-ad-interest-group"
-        data-tagging-id="G-4CCX580KEF"
-        data-load-time={1729501137431}
-        height={0}
-        width={0}
-        src="https://td.doubleclick.net/td/ga/rul?tid=G-4CCX580KEF&gacid=1313540543.1729501137&gtm=45je4ah0v871200822za200&dma=0&gcd=13l3l3l3l1l1&npa=0&pscdl=noapi&aip=1&fledge=1&frm=0&tag_exp=101686685~101823848&z=2084947899"
-        style={{ display: "none", visibility: "hidden" }}
-      />
-
-      <iframe
-        allow="join-ad-interest-group *; run-ad-auction *; shared-storage *"
-        height={0}
-        width={0}
-        aria-hidden="true"
-        title="Criteo Fledge iframe"
-        src="https://fledge.as.criteo.com/interest-group?data=7lf993xjV2RybjB5Rit4L2t1SlZ5VFY5YnRmd3h6eUhyODVXVFk5RnV4L2RGdGh4WEE1Kzc3cE5XSFdDbFpEVjVjMEdoelFPM0VwVlpFcEFRdCtMb1hFUTFXM2tPaUZOYm9nWGtYcnk3WlErTGhaNkRkWVg5T0tQSmcrYStDNDl0K2oyYmZaTHdFNDlUbTRWRVlueWZVeDNoVDRSeFV0YStMNjdOUXhMdyt3VERUTFU9fA"
-        style={{ display: "none" }}
-      />
-      <iframe
-        height={0}
-        width={0}
-        sandbox="allow-same-origin allow-scripts"
-        aria-hidden="true"
-        title="Criteo DIS iframe"
-        style={{ display: "none" }}
-      />
       <div>
         <div className="ant-modal-root">
           <div className="ant-modal-mask ant-modal-mask-hidden" />

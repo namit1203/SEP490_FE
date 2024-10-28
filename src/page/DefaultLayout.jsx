@@ -7,7 +7,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -194,7 +194,7 @@ const DefaultLayout = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              Bill is a cat.
+              <Outlet />
             </div>
           </Content>
           <Footer

@@ -6,6 +6,7 @@ import Checkout from "./page/Checkout";
 import Info from "./page/profile/Info";
 import ChangePassword from "./page/profile/ChangePassword";
 import DefaultLayout from "./page/DefaultLayout";
+import UserList from "./page/admin/managerUser/UserList";
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -29,11 +30,9 @@ export default function useRouteElements() {
       element: <Checkout />,
     },
     {
-      path: '/dashboard',
-      children: [
-        { index: true, element: <DefaultLayout /> },
-       
-      ]
+      path: "/dashboard",
+      element: <DefaultLayout />,
+      children: [{ path: "user", element: <UserList /> }],
     },
   ]);
   return routeElements;
