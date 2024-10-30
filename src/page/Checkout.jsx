@@ -22,9 +22,7 @@ const Checkout = () => {
       onOk() {
         console.log("OK");
       },
-      onCancel() {
-        console.log("Cancel");
-      },
+      onCancel() {},
     });
   }
 
@@ -45,7 +43,7 @@ const Checkout = () => {
                     setEditUser(!editUser);
                   }}
                 >
-                  <button class="ant-btn ant-btn-default ant-btn-variant-outlined">Sửa</button>
+                  Sửa
                 </a>
                 <Modal
                   title="Đổi thông tin liên hệ"
@@ -94,8 +92,8 @@ const Checkout = () => {
               {[
                 { label: "Mã đơn hàng", value: "ABCDXYZ" },
                 { label: "Hành khách", value: "Nguyễn Văn A" },
-                { label: "Số điện thoại", value: "0869019826" },
-                { label: "Email", value: "ducanhttgl102@gmail.com" },
+                { label: "Số điện thoại", value: "0868268142" },
+                { label: "Email", value: "Tuanphan204@gmail.com" },
                 { label: "Nhà xe", value: "Hoàng đức Limousine" },
                 { label: "Tuyến đường", value: "Hà Nội - Đà Nẵng" },
                 { label: "Mã ghế", value: "B2" },

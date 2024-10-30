@@ -1,21 +1,19 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react'
-
 const Info = () => {
   return (
     <div>
       <div className="space-y-4">
                     <div>
                         <label className="block text-gray-700">Họ và tên<span className="text-red-500">*</span></label>
-                        <input type="text" value="NGUYỄN ĐỨC ANH" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="text" value="THÀNH ĐỖ VŨ" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Số điện thoại</label>
-                        <input type="text" value="0869019826" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="text" value="566730000" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Ngày sinh</label>
-                        <input type="date" value="2003-02-10" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="date" value="2000-01-08" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Giới tính</label>

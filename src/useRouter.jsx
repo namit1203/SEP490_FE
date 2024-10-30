@@ -7,6 +7,8 @@ import Info from "./page/profile/Info";
 import ChangePassword from "./page/profile/ChangePassword";
 import DefaultLayout from "./page/DefaultLayout";
 import UserList from "./page/admin/managerUser/UserList";
+import Bookingconfirmation from "./page/Bookingconfirmation";
+import PaymentMethod from "./page/PaymentMethod";
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -18,12 +20,21 @@ export default function useRouteElements() {
       element: <Profile />,
       children: [
         { index: true, element: <Info /> },
-        { path: 'change-pass', element: <ChangePassword /> },
+        { path: "change-pass", element: <ChangePassword /> },
       ],
     },
     {
       path: "/bookingCar",
       element: <BookingCar />,
+    },
+
+    {
+      path: "/bookingconfirmation",
+      element: <Bookingconfirmation />,
+    },
+    {
+      path: "/payment-method",
+      element: <PaymentMethod />,
     },
     {
       path: "/checkout",

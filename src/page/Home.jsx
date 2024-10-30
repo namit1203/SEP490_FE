@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [checkTab, setChecktab] = useState("login");
-
+  const navigate = useNavigate();
   return (
     <div className="relative">
       {openLogin && (
@@ -530,12 +531,7 @@ const Home = () => {
             />
             <div className="homepage__BodyBanner-bs2n93-2 eXlcQb">
               <div className="homepage__ContentWrapper-bs2n93-3 dAuOqb">
-                <a
-                  
-                 
-                  rel="noreferrer"
-                  className="title-container"
-                >
+                <a rel="noreferrer" className="title-container">
                   <p className="base__Heading02-sc-1tvbuqk-5 dVxeQY color--white slogan-text">
                     Vexere - Cam kết hoàn 150% nếu nhà xe không cung cấp dịch vụ
                     vận chuyển
@@ -1046,6 +1042,7 @@ const Home = () => {
                         </div>
                         <div className="ant-col DesktopSearchWidgetInterface__SearchTicketCol-sc-9goqqe-12 dDMURk search-ticket-col">
                           <button
+                            onClick={() => navigate("/bookingCar")}
                             data-testid="SearchWidget.search"
                             data-tracking-event="search_tickets"
                             type="button"
@@ -3102,7 +3099,6 @@ const Home = () => {
               <h2 className="homepage__LabelH2-bs2n93-5 lKUTD">Bến xe khách</h2>
               <div className="homepage__GroupItem-bs2n93-6 bCgPqK">
                 <a
-                 
                   data-bg="https://229a2c9fe669f7b.cmccloud.com.vn/images/bx-mien-dong.jpg"
                   className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
                   style={{
@@ -3115,7 +3111,6 @@ const Home = () => {
                   </header>
                 </a>
                 <a
-                 
                   data-bg="https://229a2c9fe669f7b.cmccloud.com.vn/images/bx-gia-lam.jpg"
                   className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
                   style={{
@@ -3128,7 +3123,6 @@ const Home = () => {
                   </header>
                 </a>
                 <a
-                  
                   data-bg="https://229a2c9fe669f7b.cmccloud.com.vn/images/bx-nuoc-ngam.jpg"
                   className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
                   style={{
@@ -3141,7 +3135,6 @@ const Home = () => {
                   </header>
                 </a>
                 <a
-                
                   data-bg="https://229a2c9fe669f7b.cmccloud.com.vn/images/bx-my-dinh.jpg"
                   className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
                   style={{
@@ -3156,7 +3149,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-         <Footer/>
+          <Footer />
         </div>
       </div>
       <div>
