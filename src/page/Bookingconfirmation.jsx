@@ -49,7 +49,7 @@ const Bookingconfirmation = () => {
               </label>
               <input
                 type="email"
-                value="thanhdo9xi@gmail.com"
+                value="namit291203@gmail.com"
                 className="w-full p-2 border rounded mt-1"
                 readOnly
               />
