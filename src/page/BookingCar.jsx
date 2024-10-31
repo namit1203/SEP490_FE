@@ -1,13 +1,56 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs } from "antd";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 const BookingCar = () => {
   const [showOption, setShowOption] = useState(null);
   const [checkSelect, setCheckSelect] = useState(false);
   const [selectAddress, setSelectAddress] = useState(false);
-    const navigate = useNavigate()
+  const location = useLocation();
+  const [dataCar, setDataCar] = useState([]);
+  const [params, setParams] = useState({
+    startPoint: "",
+    endPoint: "",
+    time: "",
+  });
+  const initializeParamsFromURL = () => {
+    const searchParams = new URLSearchParams(location.search);
+    setParams({
+      startPoint: searchParams.get("startPoint") || "",
+      endPoint: searchParams.get("endPoint") || "",
+      time: searchParams.get("time") || "",
+    });
+  };
+
+  const handelFetchData = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://103.245.237.93:8082/api/Trip/searchTrip/startPoint/endPoint/time`,
+        {
+          params: {
+            startPoint: params.startPoint,
+            endPoint: params.endPoint,
+            time: params.time,
+          },
+        }
+      );
+      setDataCar(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    initializeParamsFromURL();
+  }, [location.search]);
+  const handleSearchClick = () => {
+    navigate({
+      search: createSearchParams(params).toString(),
+    });
+    handelFetchData();
+  };
+  const navigate = useNavigate();
   const onChange = (key) => {
     console.log(key);
   };
@@ -58,6 +101,37 @@ const BookingCar = () => {
   const itemsV1 = [
     {
       key: "1",
+      label: "Giảm giá",
+      children: (
+        <div className="p-4">
+          <div className="grid grid-cols-2 gap-4">
+            {discounts.map((discount, index) => (
+              <div key={index} className="border rounded-lg p-4 flex">
+                <img
+                  src={discount.image}
+                  alt="Discount image"
+                  className="w-12 h-12 mr-4"
+                />
+                <div>
+                  <div className="text-blue-600 font-bold">
+                    {discount.title}
+                  </div>
+                  <div className="text-lg font-bold">{discount.discount}</div>
+                  <div>{discount.condition}</div>
+                  <div className="text-gray-500">{discount.expiry}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-blue-600 cursor-pointer">
+            <i className="fas fa-exclamation-circle"></i> Báo cáo sai / thiếu
+            thông tin
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "2",
       label: "Đón/trả",
       children: (
         <div>
@@ -98,111 +172,6 @@ const BookingCar = () => {
               <a href="#">Báo cáo sai/thiếu thông tin</a>
             </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: "Tiện ích",
-      children: (
-        <div style={{ marginLeft: '-8px', marginRight: '-8px' }}>
-          <div className="facility-container">
-            <div className="facility-container-bg">
-          <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1609837082417.png" alt="Đèn đọc sách" />
-                <div className="name">Ghế Massage</div>
-              </div>
-              <div className="description">
-              Ghế massage giúp cho hành khách ngồi trên xe thoải mái trong thời gian dài
-              </div>
-            </div>
-            <div className="line"></div>
-            <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1609837352707.png" alt="Đèn đọc sách" />
-                <div className="name">Đèn đọc sách</div>
-              </div>
-              <div className="description">
-                Hỗ trợ hành khách đọc sách dễ dàng và an toàn khi ngồi trên xe
-              </div>
-            </div>
-            <div className="line"></div>
-            <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1609837974706.png" alt="Xe trung chuyển" />
-                <div className="name">Xe trung chuyển</div>
-              </div>
-              <div className="description">
-                Nhà xe có xe trung chuyển đón khách tận nơi tại nhà/khách sạn
-              </div>
-            </div>
-            <div className="line"></div>
-            <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1610093150480.png" alt="Nước uống" />
-                <div className="name">Nước uống</div>
-              </div>
-              <div className="description">Nhà xe có phục vụ nước cho hành khách</div>
-            </div>
-            <div className="line"></div>
-            <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1610093127922.png" alt="Gối nằm" />
-                <div className="name">Gối nằm</div>
-              </div>
-              <div className="description">Trên xe có trang bị gối nằm</div>
-            </div>
-            <div className="line"></div>
-            <div className="facility-description">
-              <div className="img-name">
-                <img src="//static.vexere.com/production/utilities/1610093115226.png" alt="Búa phá kính" />
-                <div className="name">Búa phá kính</div>
-              </div>
-              <div className="description">
-                Dùng để phá kính ô tô thoát hiểm trong trường hợp khẩn cấp.
-              </div>
-            </div>
-          </div>
-          </div>
-         <div className="facility-bonus-container">
-          {/* Additional Facilities in Columns */}
-          <div className="ant-col ant-col-8">
-            <div className="facility">
-              <img src="//static.vexere.com/production/utilities/1609837338878.png" alt="Sạc điện thoại" />
-              <div className="name">Sạc điện thoại</div>
-            </div>
-          </div>
-    
-          <div className="ant-col ant-col-8" >
-            <div className="facility">
-              <img src="//static.vexere.com/production/utilities/1610093201933.png" alt="Rèm cửa" />
-              <div className="name">Rèm cửa</div>
-            </div>
-          </div>
-    
-          <div className="ant-col ant-col-8" >
-            <div className="facility">
-              <img src="//static.vexere.com/production/utilities/1610093169649.png" alt="Chăn đắp" />
-              <div className="name">Chăn đắp</div>
-            </div>
-          </div>
-    
-          <div className="ant-col ant-col-8" >
-            <div className="facility">
-              <img src="//static.vexere.com/production/utilities/1609837875569.png" alt="Wifi" />
-              <div className="name">Wifi</div>
-            </div>
-          </div>
-    
-          <div className="ant-col ant-col-8" >
-            <div className="facility">
-              <img src="//static.vexere.com/production/utilities/1609837782107.png" alt="Điều hòa" />
-              <div className="name">Điều hòa</div>
-            
-          </div>
-          </div>
-        </div>
         </div>
       ),
     },
@@ -644,7 +613,14 @@ const BookingCar = () => {
                                         data-id="SearchWidget.from"
                                         id="from_input"
                                         placeholder=" "
-                                        defaultValue="Hà Nội"
+                                        defaultValue={params?.startPoint}
+                                        onChange={(e) =>
+                                          setParams({
+                                            ...params,
+                                            startPoint: e.target.value,
+                                          })
+                                        }
+                                        value={params.startPoint}
                                         className="styled-input"
                                         autoComplete="off"
                                       />
@@ -742,7 +718,14 @@ const BookingCar = () => {
                                         data-id="SearchWidget.to"
                                         id="to_input"
                                         placeholder=" "
-                                        defaultValue="Sa Pa - Lào Cai"
+                                        defaultValue={params?.endPoint}
+                                        onChange={(e) =>
+                                          setParams({
+                                            ...params,
+                                            endPoint: e.target.value,
+                                          })
+                                        }
+                                        value={params?.endPoint}
                                         className="styled-input"
                                         autoComplete="off"
                                       />
@@ -828,12 +811,23 @@ const BookingCar = () => {
                                 <div className="departure-date-select">
                                   <div className="DateInput__InputContainer-sc-1ktr46n-1 fYjGvO">
                                     <div className="date-input">
-                                      <p className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable">
+                                      <label className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz color--light-disable">
                                         Ngày đi
-                                      </p>
-                                      <p className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz color--darkness date-input-value">
-                                        T3, 22/10/2024
-                                      </p>
+                                      </label>
+                                      <input
+                                        type="datetime-local"
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          const formattedValue =
+                                            value.replace("T", " ") + ":00";
+                                          setParams({
+                                            ...params,
+                                            time: formattedValue,
+                                          });
+                                        }}
+                                        defaultValue={params.time}
+                                        value={params.time}
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -842,24 +836,13 @@ const BookingCar = () => {
                             </div>
                             <div className="DesktopSearchWidgetInterface__CalendarWrapper-sc-9goqqe-7 gMZfGZ calendar-wrapper" />
                           </div>
-                          <div className="ant-col DesktopSearchWidgetInterface__CalendarCol-sc-9goqqe-11 dOFBYK calendar-col input-col">
-                            <div className="DesktopSearchWidgetInterface__Divider-sc-9goqqe-2 JxPgs divider" />
-                            <div className="DesktopSearchWidgetInterface__CalendarInputWrapper-sc-9goqqe-6 ljTIiP">
-                              <div className="add-return-date">
-                                <div className="material-icons-wrapper md-24  ">
-                                  <i className="material-icons-round ">add</i>
-                                </div>
-                                <p className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz">
-                                  Thêm ngày về
-                                </p>
-                              </div>
-                              <div className="DesktopSearchWidgetInterface__LineFocused-sc-9goqqe-13 dJzjGP line-focus" />
-                            </div>
-                          </div>
                         </div>
                       </div>
                       <div className="ant-col DesktopSearchWidgetInterface__SearchTicketCol-sc-9goqqe-12 dDMURk search-ticket-col">
                         <button
+                          onClick={() => {
+                            handleSearchClick();
+                          }}
                           data-testid="SearchWidget.search"
                           data-tracking-event="search_tickets"
                           type="button"
@@ -970,27 +953,27 @@ const BookingCar = () => {
 
           {/* Result list */}
           <div className="w-3/4">
-            <h2 className="font-bold text-xl mb-4">Kết quả: 45 chuyến</h2>
+            <h2 className="font-bold text-xl mb-4">
+              Kết quả: {dataCar?.length} chuyến
+            </h2>
             {/* List of trips */}
             <div className="space-y-4">
               {/* Trip card */}
-              {Array(2, 2, 3, 3, 3).map((items, index) => {
+              {dataCar?.map((items, index) => {
                 return (
                   <div key={index} className="border rounded-lg p-4 shadow-md">
                     <div className="flex justify-between">
                       <div>
-                        <h3 className="font-bold text-lg">Sao Việt</h3>
-                        <p className="text-sm">Limousine giường phòng 21 chỗ</p>
+                        <h3 className="font-bold text-lg">{items?.fullName}</h3>
+                        <p className="text-sm">{items?.description}</p>
                         <p className="text-sm mt-2">
-                          23:00 - Văn phòng 7 Phạm... - 5h25m
+                          {items?.startTime} - {items?.pointStart}
                         </p>
-                        <p className="text-sm">
-                          04:25 - Văn phòng Sapa (23/10)
-                        </p>
+                        <p className="text-sm">{items?.pointEnd}</p>
                       </div>
                       <div className="text-right">
                         <span className="block font-bold text-lg text-blue-500">
-                          Từ 400.000đ
+                          Từ {items?.listVehicle?.[0]?.price?.toLocaleString()}đ
                         </span>
                         <button
                           onClick={() => {
@@ -1502,13 +1485,16 @@ const BookingCar = () => {
                                     750,000 đ
                                   </span>
                                 </span>
-                                <button onClick={()=>{
-                                  if(!selectAddress){
-                                    setSelectAddress(true)
-                                  } else {
-                                    navigate('/bookingconfirmation')
-                                  }
-                                }} className="ml-4 bg-blue-600 text-white px-4 py-2 rounded">
+                                <button
+                                  onClick={() => {
+                                    if (!selectAddress) {
+                                      setSelectAddress(true);
+                                    } else {
+                                      navigate("/bookingconfirmation");
+                                    }
+                                  }}
+                                  className="ml-4 bg-blue-600 text-white px-4 py-2 rounded"
+                                >
                                   Tiếp tục
                                 </button>
                               </div>

@@ -14,7 +14,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 
-const UserList = () => {
+const VehicleList = () => {
   const [open, setOpen] = useState(false);
   const [idUser, setIdUser] = useState(null);
 
@@ -23,9 +23,7 @@ const UserList = () => {
   const [form] = Form.useForm();
 
   const handelFetchData = async () => {
-    const { data } = await axios.get(
-      "http://103.245.237.93:8082/api/Account/listAccount"
-    );
+    const { data } = await axios.get("http://103.245.237.93:8082/api/Vehicle/listVehicle");
     setDataUser(data);
   };
   useEffect(() => {
@@ -36,13 +34,11 @@ const UserList = () => {
   };
   const onClose = () => {
     setOpen(false);
-    setIdUser(null)
+    setIdUser(null);
   };
 
   const confirm = async (e) => {
-    await axios.delete(
-      "http://103.245.237.93:8082/api/Account/deleteAccount/" + e
-    );
+    await axios.delete("http://103.245.237.93:8082/api/Vehicle/deleteVehicleByStatus/" + e);
     handelFetchData();
     message.success("Click on Yes");
   };
@@ -53,25 +49,21 @@ const UserList = () => {
   const dataSource = dataUser.filter((data) => data.status == true);
   const columns = [
     {
-      title: "Name",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "description",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: "email",
-      dataIndex: "email",
-      key: "email",
+      title: "licensePlate",
+      dataIndex: "licensePlate",
+      key: "licensePlate",
     },
     {
-      title: "numberPhone",
-      dataIndex: "numberPhone",
-      key: "numberPhone",
+      title: "numberSeat",
+      dataIndex: "numberSeat",
+      key: "numberSeat",
     },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
+
     {
       title: "Action",
       render: ({ id }) => {
@@ -104,8 +96,18 @@ const UserList = () => {
       },
     },
   ];
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = async (values) => {
+    await axios.put("http://103.245.237.93:8082/api/Driver/" + idUser, {
+      ...values,
+      dob: "2024-10-31T03:44:08.522Z",
+      statusWork: "string",
+      typeOfDriver: 0,
+      status: true,
+    });
+    message.success("success")
+    onClose()
+    handelFetchData()
+
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -114,7 +116,7 @@ const UserList = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://103.245.237.93:8082/api/Account/detailsAccount/" + idUser
+          "http://103.245.237.93:8082/api/Driver/" + idUser
         );
         const data = await response.json();
         form.setFieldsValue({
@@ -133,7 +135,7 @@ const UserList = () => {
     if (open) {
       fetchData();
     }
-  }, [open, form,idUser]);
+  }, [open, form, idUser]);
   return (
     <div>
       <Breadcrumb routes={[{ breadcrumbName: "Dashboard/User" }]} />
@@ -153,16 +155,16 @@ const UserList = () => {
           </Form.Item>
 
           <Form.Item
-            label="Username"
-            name="username"
+            label="name driver"
+            name="userName"
             rules={[{ required: true, message: "Please input your username!" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
+            label="name"
+            name="name"
             rules={[{ required: true, message: "Please input your email!" }]}
           >
             <Input />
@@ -177,48 +179,36 @@ const UserList = () => {
           >
             <Input />
           </Form.Item>
-
           <Form.Item label="Avatar" name="avatar">
             <Input />
           </Form.Item>
-
-          <Form.Item
-            label="Full Name"
-            name="fullName"
-            rules={[
-              { required: true, message: "Please input your full name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
           {/* <Form.Item label="Address" name="address">
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Status" name="status" valuePropName="checked">
-            <Checkbox />
-          </Form.Item>
-
-          <Form.Item label="Date of Birth" name="dob">
-            <DatePicker format="YYYY-MM-DD" />
-          </Form.Item>
-
-          <Form.Item label="Created At" name="createdAt">
-            <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
-          </Form.Item>
-
-          <Form.Item label="Created By" name="createdBy">
-            <Input disabled />
-          </Form.Item>
-
-          <Form.Item label="Updated At" name="updateAt">
-            <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
-          </Form.Item>
-
-          <Form.Item label="Updated By" name="updateBy">
-            <Input disabled />
-          </Form.Item> */}
+              <Input />
+            </Form.Item>
+  
+            <Form.Item label="Status" name="status" valuePropName="checked">
+              <Checkbox />
+            </Form.Item>
+  
+            <Form.Item label="Date of Birth" name="dob">
+              <DatePicker format="YYYY-MM-DD" />
+            </Form.Item>
+  
+            <Form.Item label="Created At" name="createdAt">
+              <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
+            </Form.Item>
+  
+            <Form.Item label="Created By" name="createdBy">
+              <Input disabled />
+            </Form.Item>
+  
+            <Form.Item label="Updated At" name="updateAt">
+              <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
+            </Form.Item>
+  
+            <Form.Item label="Updated By" name="updateBy">
+              <Input disabled />
+            </Form.Item> */}
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
@@ -234,4 +224,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default VehicleList;

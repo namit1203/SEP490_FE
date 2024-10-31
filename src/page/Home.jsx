@@ -1,11 +1,17 @@
 import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [checkTab, setChecktab] = useState("login");
+  const [dataSearch, setDataSearch] = useState({
+    startPoint: "",
+    endPoint: "",
+    time: "",
+  });
+  console.log(dataSearch, "dataSearchdataSearch");
   const navigate = useNavigate();
   return (
     <div className="relative">
@@ -831,10 +837,14 @@ const Home = () => {
                                         <input
                                           id=""
                                           onChange={(e) =>
-                                            console.log(e.target.value)
+                                            setDataSearch({
+                                              ...dataSearch,
+                                              startPoint: e.target.value,
+                                            })
                                           }
-                                          placeholder=" "
-                                          defaultValue={"chọn"}
+                                          placeholder="Chọn điểm đi"
+                                          defaultValue={dataSearch.startPoint}
+                                          value={dataSearch.startPoint}
                                           className=""
                                         />
                                         <label
@@ -929,10 +939,14 @@ const Home = () => {
                                         <input
                                           id=""
                                           onChange={(e) =>
-                                            console.log(e.target.value)
+                                            setDataSearch({
+                                              ...dataSearch,
+                                              endPoint: e.target.value,
+                                            })
                                           }
-                                          placeholder=" "
-                                          defaultValue={"chọn"}
+                                          placeholder="Chọn Nơi đến"
+                                          defaultValue={dataSearch.endPoint}
+                                          value={dataSearch.endPoint}
                                           className=""
                                         />
                                         <label
@@ -1015,16 +1029,30 @@ const Home = () => {
                                     />
                                   </div>
                                   <div className="departure-date-select">
-                                    <p className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz color--light-disable">
+                                    <label className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz color--light-disable">
                                       Ngày đi
-                                    </p>
+                                    </label>
+                                    <input
+                                      type="datetime-local"
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        const formattedValue =
+                                          value.replace("T", " ") + ":00";
+                                        setDataSearch({
+                                          ...dataSearch,
+                                          time: formattedValue,
+                                        });
+                                      }}
+                                      defaultValue={dataSearch.time}
+                                      value={dataSearch.time}
+                                    />
                                   </div>
                                 </div>
                                 <div className="DesktopSearchWidgetInterface__LineFocused-sc-9goqqe-13 dJzjGP line-focus"></div>
                               </div>
                               <div className="DesktopSearchWidgetInterface__CalendarWrapper-sc-9goqqe-7 gMZfGZ calendar-wrapper"></div>
                             </div>
-                            <div className="ant-col DesktopSearchWidgetInterface__CalendarCol-sc-9goqqe-11 dOFBYK calendar-col input-col">
+                            {/* <div className="ant-col DesktopSearchWidgetInterface__CalendarCol-sc-9goqqe-11 dOFBYK calendar-col input-col">
                               <div className="DesktopSearchWidgetInterface__Divider-sc-9goqqe-2 JxPgs divider"></div>
                               <div className="DesktopSearchWidgetInterface__CalendarInputWrapper-sc-9goqqe-6 ljTIiP">
                                 <div className="add-return-date">
@@ -1037,12 +1065,21 @@ const Home = () => {
                                 </div>
                                 <div className="DesktopSearchWidgetInterface__LineFocused-sc-9goqqe-13 dJzjGP line-focus"></div>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                         <div className="ant-col DesktopSearchWidgetInterface__SearchTicketCol-sc-9goqqe-12 dDMURk search-ticket-col">
                           <button
-                            onClick={() => navigate("/bookingCar")}
+                            onClick={() => {
+                              navigate({
+                                pathname: "/bookingCar",
+                                search: createSearchParams({
+                                  startPoint: dataSearch.startPoint,
+                                  endPoint: dataSearch.endPoint,
+                                  time: dataSearch.time,
+                                }).toString(),
+                              });
+                            }}
                             data-testid="SearchWidget.search"
                             data-tracking-event="search_tickets"
                             type="button"

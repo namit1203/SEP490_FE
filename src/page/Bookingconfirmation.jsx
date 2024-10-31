@@ -18,7 +18,7 @@ const Bookingconfirmation = () => {
               <label className="block text-gray-700">Tên người đi *</label>
               <input
                 type="text"
-                value="THÀNH ĐÔ VŨ"
+                value="NAM SƠN LÊ"
                 className="w-full p-2 border rounded mt-1"
                 readOnly
               />

@@ -9,6 +9,11 @@ import DefaultLayout from "./page/DefaultLayout";
 import UserList from "./page/admin/managerUser/UserList";
 import Bookingconfirmation from "./page/Bookingconfirmation";
 import PaymentMethod from "./page/PaymentMethod";
+import RoleList from "./page/admin/managerRole/RoleList";
+import DriverList from "./page/admin/managerDriver/ListDriver";
+import PromotionList from "./page/admin/managerPromotion/PromotionList";
+import ListRequest from "./page/admin/managerRequest/ListRequest";
+import VehicleList from "./page/admin/managerVehicle/ListVehicle";
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -27,7 +32,6 @@ export default function useRouteElements() {
       path: "/bookingCar",
       element: <BookingCar />,
     },
-
     {
       path: "/bookingconfirmation",
       element: <Bookingconfirmation />,
@@ -43,7 +47,14 @@ export default function useRouteElements() {
     {
       path: "/dashboard",
       element: <DefaultLayout />,
-      children: [{ path: "user", element: <UserList /> }],
+      children: [
+        { path: "user", element: <UserList /> },
+        { path: "role", element: <RoleList /> },
+        { path: "driver", element: <DriverList /> },
+        { path: "promotion", element: <PromotionList /> },
+        { path: "request", element: <ListRequest /> },
+        { path: "vehicle", element: <VehicleList /> },
+      ],
     },
   ]);
   return routeElements;
