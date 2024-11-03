@@ -7,7 +7,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -19,18 +19,37 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+  getItem("dashboard", "1", <PieChartOutlined />),
+  getItem(
+    <NavLink to={`/dashboard/user`}>User</NavLink>,
+    "sub1",
+    <UserOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/role`}>role</NavLink>,
+    "sub2",
+    <TeamOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/driver`}>driver</NavLink>,
+    "9",
+    <FileOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/promotion`}>promotion</NavLink>,
+    "91",
+    <FileOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/request`}>request</NavLink>,
+    "92",
+    <FileOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/vehicle`}>vehicle</NavLink>,
+    "93",
+    <FileOutlined />
+  ),
 ];
 const DefaultLayout = () => {
   const [collapsed, setCollapsed] = useState(false);

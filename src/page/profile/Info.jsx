@@ -5,15 +5,15 @@ const Info = () => {
       <div className="space-y-4">
                     <div>
                         <label className="block text-gray-700">Họ và tên<span className="text-red-500">*</span></label>
-                        <input type="text" value="Nam Sơn Lê" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="text" value="nhaxeninhbinh" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Số điện thoại</label>
-                        <input type="text" value="776459506" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="text" value="0923323144" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Ngày sinh</label>
-                        <input type="date" value="2000-01-08" className="w-full border border-gray-300 rounded p-2 mt-1" />
+                        <input type="date" value="1990-01-13" className="w-full border border-gray-300 rounded p-2 mt-1" />
                     </div>
                     <div>
                         <label className="block text-gray-700">Giới tính</label>

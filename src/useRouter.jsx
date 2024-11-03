@@ -32,6 +32,7 @@ export default function useRouteElements() {
       path: "/bookingCar",
       element: <BookingCar />,
     },
+
     {
       path: "/bookingconfirmation",
       element: <Bookingconfirmation />,

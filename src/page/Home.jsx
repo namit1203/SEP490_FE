@@ -2,7 +2,8 @@ import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { createSearchParams, useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { message } from "antd";
 const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [checkTab, setChecktab] = useState("login");
@@ -13,6 +14,59 @@ const Home = () => {
   });
   console.log(dataSearch, "dataSearchdataSearch");
   const navigate = useNavigate();
+  const [dataLogin, setDataLogin] = useState({
+    id: 0,
+    username: "",
+    email: "string",
+    numberPhone: "string",
+    password: "",
+    roleName: "string",
+  });
+  const [dataSignup, setDataSignup] = useState({
+    id: 0,
+    username: "",
+    email: "",
+    numberPhone: "string",
+    password: "",
+    dob: "2024-11-02T13:03:21.606Z",
+    status: true,
+    activeCode: "string",
+    updateAt: "2024-11-02T13:03:21.606Z",
+    createdAt: "2024-11-02T13:03:21.606Z",
+  });
+  const handelLogin = async () => {
+    try {
+      // http://103.245.237.93:8082/api/Auth
+      if (checkTab == "login") {
+        const { data } = await axios.post(
+          "http://103.245.237.93:8082/api/Auth/login",
+          dataLogin
+        );
+        if (data) {
+          message.success("Login successful");
+          localStorage.setItem("token", data);
+          setOpenLogin(false);
+        } else {
+          message.error("Login faild");
+        }
+        console.log(data, "dataLogin");
+      } else {
+        const { data } = await axios.post(
+          "http://103.245.237.93:8082/api/Auth",
+          dataSignup
+        );
+        if (data) {
+          message.success("successful");
+          setChecktab("login");
+        } else {
+          message.error("Login faild");
+        }
+        console.log(data, "dataLogin");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="relative">
       {openLogin && (
@@ -71,17 +125,79 @@ const Home = () => {
                     <div className="core__Box-sc-1c81tsc-0 egrBeo">
                       <div className="core__Box-sc-1c81tsc-0 bbPuqJ">
                         <div>
+                          {checkTab != "login" && (
+                            <>
+                              <span className="core__Text-sc-1c81tsc-1 hDnryH mt-2">
+                                Email
+                              </span>
+                              <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
+                                <input
+                                  onChange={(e) => {
+                                    checkTab != "login" &&
+                                      setDataSignup({
+                                        ...dataSignup,
+                                        email: e.target.value,
+                                      });
+                                  }}
+                                  className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
+                                  type="text"
+                                />
+                              </div>
+                            </>
+                          )}
                           <span className="core__Text-sc-1c81tsc-1 hDnryH">
-                            Số điện thoại
+                            Tên đăng nhập
                           </span>
                           <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
                             <input
+                              onChange={(e) => {
+                                checkTab == "login"
+                                  ? setDataLogin({
+                                      ...dataLogin,
+                                      username: e.target.value,
+                                    })
+                                  : setDataSignup({
+                                      ...dataSignup,
+                                      username: e.target.value,
+                                    });
+                              }}
+                              value={
+                                checkTab == "login"
+                                  ? dataLogin.username
+                                  : dataSignup.username
+                              }
                               className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
                               type="text"
-                              defaultValue={"+84"}
                             />
                           </div>
+                          <span className="core__Text-sc-1c81tsc-1 hDnryH mt-2">
+                            Mật khẩu
+                          </span>
+                          <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
+                            <input
+                              onChange={(e) => {
+                                checkTab == "login"
+                                  ? setDataLogin({
+                                      ...dataLogin,
+                                      password: e.target.value,
+                                    })
+                                  : setDataSignup({
+                                      ...dataSignup,
+                                      password: e.target.value,
+                                    });
+                              }}
+                              value={
+                                checkTab == "login"
+                                  ? dataLogin.password
+                                  : dataSignup.password
+                              }
+                              className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
+                              type="password"
+                            />
+                          </div>
+
                           <button
+                            onClick={handelLogin}
                             id="btn-phone-auth"
                             type="button"
                             className="ant-btn ant-btn-lg ant-btn-block"
