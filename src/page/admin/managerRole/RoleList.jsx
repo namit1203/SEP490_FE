@@ -13,6 +13,7 @@ import {
   import axios from "axios";
   import dayjs from "dayjs";
   import React, { useEffect, useState } from "react";
+import { checkLoginToken } from "../../../utils";
   
   const RoleList = () => {
     const [open, setOpen] = useState(false);
@@ -24,7 +25,11 @@ import {
   
     const handelFetchData = async () => {
       const { data } = await axios.get(
-        "http://103.245.237.93:8082/api/Account/listRole"
+        "http://103.245.237.93:8082/api/Account/listRole", {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
       );
       setDataUser(data);
     };
@@ -76,7 +81,6 @@ import {
             //       Remove
             //     </Button>
             //   </Popconfirm>
-  
             //   <Button
             //     onClick={() => {
             //       setIdUser(id);

@@ -91,9 +91,9 @@ const Checkout = () => {
             <div className="border border-gray-200 rounded-md p-5">
               {[
                 { label: "Mã đơn hàng", value: "ABCDXYZ" },
-                { label: "Hành khách", value: "Nguyễn Đức Anh" },
-                { label: "Số điện thoại", value: "0869019826" },
-                { label: "Email", value: "ducanhttgl102@gmail.com" },
+                { label: "Hành khách", value: "Nguyễn Văn A" },
+                { label: "Số điện thoại", value: "0868268142" },
+                { label: "Email", value: "Tuanphan204@gmail.com" },
                 { label: "Nhà xe", value: "Hoàng đức Limousine" },
                 { label: "Tuyến đường", value: "Hà Nội - Đà Nẵng" },
                 { label: "Mã ghế", value: "B2" },

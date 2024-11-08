@@ -77,7 +77,7 @@ const Detail = () => {
                 <div className="TicketPC__TripInfo-sc-1mxgwjh-6 kERmQy">
                   <div className="bus-info">
                     <div className="bus-name">Sao Việt</div>
-                    <button type="button" className="ant-btn bus-rating-button">
+                    <button className="ant-btn bus-rating-button">
                       <div className="bus-rating">
                         <i
                           aria-label="icon: star"
@@ -161,10 +161,7 @@ const Detail = () => {
                     <div className="seat-available ">Còn 18 chỗ trống</div>
                   </div>
                   <div className="action">
-                    <button
-                      type="button"
-                      className="ant-btn btn-detail ant-btn-link"
-                    >
+                    <button className="ant-btn btn-detail ant-btn-link">
                       <span>Thông tin chi tiết</span>
                       <i
                         aria-label="icon: caret-down"
@@ -186,9 +183,7 @@ const Detail = () => {
                     </button>
                     <button
                       data-tracking-event="selected_route"
-                      type="button"
                       className="ant-btn btn-booking "
-                      
                     >
                       <span>Đóng</span>
                     </button>
@@ -2219,7 +2214,6 @@ const Detail = () => {
                     <button
                       data-current={0}
                       data-tracking-event="completed_seat_selection"
-                      type="button"
                       className="ant-btn footer-nextstep ant-btn-primary"
                     >
                       <span>Tiếp tục</span>

@@ -13,6 +13,7 @@ import {
   import axios from "axios";
   import dayjs from "dayjs";
   import React, { useEffect, useState } from "react";
+import { checkLoginToken } from "../../../utils";
   
   const PromotionList = () => {
     const [open, setOpen] = useState(false);
@@ -24,7 +25,11 @@ import {
   
     const handelFetchData = async () => {
       const { data } = await axios.get(
-        "http://103.245.237.93:8082/api/Promotion"
+        "http://103.245.237.93:8082/api/Promotion", {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
       );
       setDataUser(data);
     };
@@ -41,7 +46,11 @@ import {
   
     const confirm = async (e) => {
       await axios.delete(
-        "http://103.245.237.93:8082/api/Account/deleteAccount/" + e
+        "http://103.245.237.93:8082/api/Account/deleteAccount/" + e, {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
       );
       handelFetchData();
       message.success("Click on Yes");
@@ -84,12 +93,13 @@ import {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button className="bg-red-500 text-white font-semibold">
+                <Button htmlType="" className="bg-red-500 text-white font-semibold">
                   Remove
                 </Button>
               </Popconfirm>
   
               <Button
+              htmlType=""
                 onClick={() => {
                   setIdUser(id);
                   showDrawer();
@@ -113,7 +123,11 @@ import {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            "http://103.245.237.93:8082/api/Account/detailsAccount/" + idUser
+            'http://103.245.237.93:8082/api/Promotion/getPromotionById', {
+              headers: {
+                Authorization: "Bearer " + checkLoginToken(),
+              },
+            }
           );
           const data = await response.json();
           form.setFieldsValue({

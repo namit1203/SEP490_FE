@@ -4,12 +4,17 @@ import { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { checkLoginToken } from "../utils";
 const BookingCar = () => {
   const [showOption, setShowOption] = useState(null);
   const [checkSelect, setCheckSelect] = useState(false);
   const [selectAddress, setSelectAddress] = useState(false);
   const location = useLocation();
   const [dataCar, setDataCar] = useState([]);
+  const [TripDetails, setTripDetails] = useState([]);
+  const [startPoint, setStartPoint] = useState([]);
+  const [endPoint, setEndPoint] = useState([]);
+
   const [params, setParams] = useState({
     startPoint: "",
     endPoint: "",
@@ -23,16 +28,19 @@ const BookingCar = () => {
       time: searchParams.get("time") || "",
     });
   };
-
   const handelFetchData = async () => {
     try {
       const { data } = await axios.get(
-        `http://103.245.237.93:8082/api/Trip/searchTrip/startPoint/endPoint/time`,
+        // `http://103.245.237.93:8082/api/Trip/searchTrip/startPoint/endPoint/time`,
+        `http://103.245.237.93:8082/api/Trip`,
         {
           params: {
             startPoint: params.startPoint,
             endPoint: params.endPoint,
             time: params.time,
+          },
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
           },
         }
       );
@@ -142,32 +150,55 @@ const BookingCar = () => {
               <br />
               Lịch này có thể thay đổi tùy tình hình thực tế.
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="font-bold">Điểm đón</div>
-              <div className="font-bold">Điểm trả</div>
-              <div>22:00 • Văn phòng 779 Giải Phóng</div>
-              <div>04:00 (30/10) • Bến xe Sapa</div>
-              <div>23:00 • Văn phòng 7 Phạm Văn Đồng</div>
-              <div>04:40 (30/10) • Văn phòng Sapa</div>
-              <div>23:00 • Sân bay Nội Bài - Sảnh nội địa cửa đến E5</div>
-              <div>
-                05:00 (30/10) •{" "}
-                <span className="bg-green-200 text-green-800 px-2 py-1 rounded">
-                  Có trung chuyển
-                </span>{" "}
-                Thị trấn Sapa
-              </div>
-              <div>23:00 • Sân bay Nội Bài - Sảnh quốc tế Cột 17 Tầng 1</div>
-              <div></div>
-              <div>23:20 • Văn phòng Nội Bài</div>
-              <div></div>
-              <div>23:20 • Bến xe buýt Chợ Bầu</div>
-              <div></div>
-              <div>23:25 • Mê Linh Plaza</div>
-              <div></div>
-              <div>23:40 • Km 16 cao tốc Nội Bài - Lào Cai</div>
-              <div></div>
-            </div>
+            {TripDetails?.map((dt) => {
+              return (
+                <div
+                  key={dt?.id}
+                  className="mb-4 p-4 border rounded-lg shadow-md bg-white"
+                >
+                  <div className="mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Point Start Details
+                    </label>
+                    <input
+                      value={dt.pointStartDetails}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Point End Details
+                    </label>
+                    <input
+                      value={dt.pointEndDetails}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Time Start Details
+                    </label>
+                    <input
+                      value={dt.timeStartDetils}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Time End Details
+                    </label>
+                    <input
+                      value={dt.timeEndDetails}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      readOnly
+                    />
+                  </div>
+                </div>
+              );
+            })}
             <div className="mt-4 text-blue-600">
               <a href="#">Báo cáo sai/thiếu thông tin</a>
             </div>
@@ -344,6 +375,37 @@ const BookingCar = () => {
       ),
     },
   ];
+  const handelFetchApi = async (id) => {
+    try {
+      const [dataTripDetail, dataPointStart, dataPointEnd] =
+        await Promise.allSettled([
+          axios.get(
+            "http://103.245.237.93:8082/api/TripDetails/tripId?TripId=" + id
+          ),
+          axios.get(
+            "http://103.245.237.93:8082/api/TripDetails/startPoint/tripId?TripId=" +
+              id
+          ),
+          axios.get(
+            "http://103.245.237.93:8082/api/TripDetails/endPoint/tripId?TripId=" +
+              id
+          ),
+        ]);
+      console.log(dataTripDetail.value, "dataTripDetail.value");
+      if (dataTripDetail.status == "fulfilled") {
+        setTripDetails(dataTripDetail.value.data);
+      }
+      if (dataPointStart.status == "fulfilled") {
+        setStartPoint(dataPointStart.value.data);
+      }
+      if (dataPointEnd.status == "fulfilled") {
+        setEndPoint(dataPointEnd.value.data);
+      }
+    } catch (error) {
+      //
+      console.log(error);
+    }
+  };
   return (
     <div>
       <Header />
@@ -845,7 +907,6 @@ const BookingCar = () => {
                           }}
                           data-testid="SearchWidget.search"
                           data-tracking-event="search_tickets"
-                          type="button"
                           className="ant-btn DesktopSearchWidgetInterface__ButtonDateStyled-sc-9goqqe-0 DesktopSearchWidgetInterface__ButtonSearchStyled-sc-9goqqe-1 kvbcsM jfbJs button-search ant-btn-block"
                         >
                           <span>Tìm kiếm</span>
@@ -960,6 +1021,7 @@ const BookingCar = () => {
             <div className="space-y-4">
               {/* Trip card */}
               {dataCar?.map((items, index) => {
+                console.log(items, "itemsxx");
                 return (
                   <div key={index} className="border rounded-lg p-4 shadow-md">
                     <div className="flex justify-between">
@@ -978,6 +1040,7 @@ const BookingCar = () => {
                         <button
                           onClick={() => {
                             setShowOption(index);
+                            handelFetchApi(items.id);
                           }}
                           className="mt-2 px-4 block py-2 bg-yellow-400 rounded-md"
                         >
@@ -1031,51 +1094,28 @@ const BookingCar = () => {
                                     <div className="text-green-600 mb-2">
                                       Cách vị trí của bạn 1.5 km
                                     </div>
-                                    <div className="mb-4">
-                                      <input
-                                        type="radio"
-                                        id="pickup1"
-                                        name="pickup"
-                                        className="mr-2"
-                                      />
-                                      <label htmlFor="pickup1">
-                                        <span className="font-bold">23:25</span>{" "}
-                                        • Mê Linh Plaza
-                                        <div className="text-sm text-gray-600">
-                                          Km8, đường Võ Văn Kiệt, cao tốc Thăng
-                                          Long, Thị trấn Quang Minh, Mê Linh, Hà
-                                          Nội{" "}
-                                          <span className="text-blue-500 cursor-pointer">
-                                            Xem vị trí
-                                          </span>
+                                    {startPoint?.map((stp, index) => {
+                                      return (
+                                        <div key={index} className="mb-4">
+                                          <input
+                                            type="radio"
+                                            id="pickup1"
+                                            name="pickup"
+                                            className="mr-2"
+                                          />
+                                          <label htmlFor="pickup1">
+                                            <span className="font-bold">
+                                             {stp?.timeStartDetils}
+                                            </span>{" "}
+                                            • {stp?.pointStartDetails}
+                                          
+                                          </label>
+                                          <div className="text-green-600">
+                                            Cách vị trí của bạn 7.6 km
+                                          </div>
                                         </div>
-                                      </label>
-                                      <div className="text-green-600">
-                                        Cách vị trí của bạn 7.6 km
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <input
-                                        type="radio"
-                                        id="pickup2"
-                                        name="pickup"
-                                        className="mr-2"
-                                      />
-                                      <label htmlFor="pickup2">
-                                        <span className="font-bold">23:40</span>{" "}
-                                        • Km 16 cao tốc Nội Bài - Lào Cai
-                                        <div className="text-sm text-gray-600">
-                                          Km 16 cao tốc Nội Bài - Lào Cai, Sóc
-                                          Sơn, Hà Nội{" "}
-                                          <span className="text-blue-500 cursor-pointer">
-                                            Xem vị trí
-                                          </span>
-                                        </div>
-                                      </label>
-                                      <div className="text-green-600">
-                                        Cách vị trí của bạn 23 km
-                                      </div>
-                                    </div>
+                                      );
+                                    })}
                                   </div>
                                   <div className="border p-4 rounded">
                                     <h2 className="font-bold mb-2">Điểm trả</h2>
@@ -1094,58 +1134,28 @@ const BookingCar = () => {
                                     <div className="text-green-600 mb-2">
                                       Cách vị trí của bạn 240.1 km
                                     </div>
-                                    <div className="mb-4">
-                                      <input
-                                        type="radio"
-                                        id="dropoff1"
-                                        name="dropoff"
-                                        className="mr-2"
-                                      />
-                                      <label htmlFor="dropoff1">
-                                        <span className="font-bold">
-                                          04:00 (30/10)
-                                        </span>{" "}
-                                        • Bến xe Sapa
-                                        <div className="text-sm text-gray-600">
-                                          Quốc lộ 4D, Sapa, Thị trấn Sa Pa, Sa
-                                          Pa, Lào Cai{" "}
-                                          <span className="text-blue-500 cursor-pointer">
-                                            Xem vị trí
-                                          </span>
+                                    {endPoint?.map((stp, index) => {
+                                      return (
+                                        <div key={index} className="mb-4">
+                                          <input
+                                            type="radio"
+                                            id="pickup1"
+                                            name="pickup"
+                                            className="mr-2"
+                                          />
+                                          <label htmlFor="pickup1">
+                                            <span className="font-bold">
+                                             {stp?.timeEndDetails}
+                                            </span>{" "}
+                                            • {stp?.pointEndDetails}
+                                          
+                                          </label>
+                                          <div className="text-green-600">
+                                            Cách vị trí của bạn 7.6 km
+                                          </div>
                                         </div>
-                                      </label>
-                                      <div className="text-green-600">
-                                        Cách vị trí của bạn 240.1 km
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <input
-                                        type="radio"
-                                        id="dropoff2"
-                                        name="dropoff"
-                                        className="mr-2"
-                                        checked
-                                      />
-                                      <label htmlFor="dropoff2">
-                                        <span className="font-bold">
-                                          04:40 (30/10)
-                                        </span>{" "}
-                                        • Văn phòng Sapa
-                                        <div className="text-sm text-gray-600">
-                                          Đường N1, Chợ Mới, 571 đường Điện Biên
-                                          Phủ, Thị trấn Sa Pa, Sa Pa, Lào Cai{" "}
-                                          <span className="text-blue-500 cursor-pointer">
-                                            Xem vị trí
-                                          </span>
-                                        </div>
-                                      </label>
-                                      <div className="text-green-600">
-                                        Cách vị trí của bạn 240.2 km
-                                      </div>
-                                      <div className="bg-green-100 text-green-700 px-2 py-1 rounded inline-block mt-2">
-                                        Trung chuyển
-                                      </div>
-                                    </div>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               </>

@@ -13,17 +13,23 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import { checkLoginToken } from "../../../utils";
 
 const DriverList = () => {
   const [open, setOpen] = useState(false);
   const [idUser, setIdUser] = useState(null);
+  const [checkAdd, setCheckAdd] = useState(false);
 
   const [dataUser, setDataUser] = useState([]);
   const [accountData, setAccountData] = useState(null);
   const [form] = Form.useForm();
 
   const handelFetchData = async () => {
-    const { data } = await axios.get("http://103.245.237.93:8082/api/Driver");
+    const { data } = await axios.get("http://103.245.237.93:8082/api/Driver", {
+      headers: {
+        Authorization: "Bearer " + checkLoginToken(),
+      },
+    });
     setDataUser(data);
   };
   useEffect(() => {
@@ -38,7 +44,11 @@ const DriverList = () => {
   };
 
   const confirm = async (e) => {
-    await axios.delete("http://103.245.237.93:8082/api/Driver/" + e);
+    await axios.delete("http://103.245.237.93:8082/api/Driver/" + e, {
+      headers: {
+        Authorization: "Bearer " + checkLoginToken(),
+      },
+    });
     handelFetchData();
     message.success("Click on Yes");
   };
@@ -77,12 +87,13 @@ const DriverList = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button className="bg-red-500 text-white font-semibold">
+              <Button htmlType="" className="bg-red-500 text-white font-semibold">
                 Remove
               </Button>
             </Popconfirm>
 
             <Button
+            htmlType=""
               onClick={() => {
                 setIdUser(id);
                 showDrawer();
@@ -104,10 +115,9 @@ const DriverList = () => {
       typeOfDriver: 0,
       status: true,
     });
-    message.success("success")
-    onClose()
-    handelFetchData()
-
+    message.success("success");
+    onClose();
+    handelFetchData();
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -139,6 +149,15 @@ const DriverList = () => {
   return (
     <div>
       <Breadcrumb routes={[{ breadcrumbName: "Dashboard/User" }]} />
+      <div className="flex justify-end">
+        <Button
+        htmlType=""
+          onClick={showDrawer}
+          className="bg-green-500 text-white font-medium"
+        >
+          Thêm Mới
+        </Button>
+      </div>
       <Drawer title="Basic Drawer" onClose={onClose} open={open}>
         <Form
           form={form}
@@ -150,39 +169,68 @@ const DriverList = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item label="ID" name="id">
-            <Input disabled />
-          </Form.Item>
+          {checkAdd ? (
+            <>
+              <Form.Item
+                label="name driver"
+                name="userName"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="name driver"
+                name="userName"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : (
+            <>
+              <Form.Item label="ID" name="id">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item
+                label="name driver"
+                name="userName"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Form.Item
-            label="name driver"
-            name="userName"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item>
+              <Form.Item
+                label="name"
+                name="name"
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Form.Item
-            label="name"
-            name="name"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Phone Number"
-            name="numberPhone"
-            rules={[
-              { required: true, message: "Please input your phone number!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Avatar" name="avatar">
-            <Input />
-          </Form.Item>
-          {/* <Form.Item label="Address" name="address">
+              <Form.Item
+                label="Phone Number"
+                name="numberPhone"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your phone number!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item label="Avatar" name="avatar">
+                <Input />
+              </Form.Item>
+              {/* <Form.Item label="Address" name="address">
               <Input />
             </Form.Item>
   
@@ -209,6 +257,8 @@ const DriverList = () => {
             <Form.Item label="Updated By" name="updateBy">
               <Input disabled />
             </Form.Item> */}
+            </>
+          )}
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">

@@ -14,6 +14,10 @@ import DriverList from "./page/admin/managerDriver/ListDriver";
 import PromotionList from "./page/admin/managerPromotion/PromotionList";
 import ListRequest from "./page/admin/managerRequest/ListRequest";
 import VehicleList from "./page/admin/managerVehicle/ListVehicle";
+import LossCostType from "./page/admin/LossCostType/LossCostType";
+import TripList from "./page/admin/managerTrip/TripList";
+import RenterCar from "./page/RenterCar";
+import RewardPoints from "./page/profile/RewardPoints";
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -21,11 +25,20 @@ export default function useRouteElements() {
       element: <Home />,
     },
     {
+      path: "*",
+      element: (
+        <div className="text-center font-bold text-black text-4xl">
+          Page not found !
+        </div>
+      ),
+    },
+    {
       path: "/profile",
       element: <Profile />,
       children: [
         { index: true, element: <Info /> },
         { path: "change-pass", element: <ChangePassword /> },
+        { path: "reward-point", element: <RewardPoints /> },
       ],
     },
     {
@@ -41,6 +54,7 @@ export default function useRouteElements() {
       path: "/payment-method",
       element: <PaymentMethod />,
     },
+    { path: "/renter", element: <RenterCar /> },
     {
       path: "/checkout",
       element: <Checkout />,
@@ -55,6 +69,8 @@ export default function useRouteElements() {
         { path: "promotion", element: <PromotionList /> },
         { path: "request", element: <ListRequest /> },
         { path: "vehicle", element: <VehicleList /> },
+        { path: "lossCostType", element: <LossCostType /> },
+        { path: "trip", element: <TripList /> },
       ],
     },
   ]);

@@ -13,18 +13,22 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import { checkLoginToken } from "../../../utils";
 
 const UserList = () => {
   const [open, setOpen] = useState(false);
   const [idUser, setIdUser] = useState(null);
-
+  const [checkOtp,setCheckOtp] = useState(false);
   const [dataUser, setDataUser] = useState([]);
   const [accountData, setAccountData] = useState(null);
   const [form] = Form.useForm();
-
   const handelFetchData = async () => {
     const { data } = await axios.get(
-      "http://103.245.237.93:8082/api/Account/listAccount"
+      "http://103.245.237.93:8082/api/Account/listAccount",{
+          headers:{
+            'Authorization': 'Bearer ' + checkLoginToken()
+          }
+      }
     );
     setDataUser(data);
   };
@@ -41,7 +45,11 @@ const UserList = () => {
 
   const confirm = async (e) => {
     await axios.delete(
-      "http://103.245.237.93:8082/api/Account/deleteAccount/" + e
+      "http://103.245.237.93:8082/api/Account/deleteAccount/" + e,{
+        headers:{
+          'Authorization': 'Bearer ' + checkLoginToken()
+        }
+    }
     );
     handelFetchData();
     message.success("Click on Yes");
@@ -85,12 +93,13 @@ const UserList = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button className="bg-red-500 text-white font-semibold">
+              <Button htmlType="" className="bg-red-500 text-white font-semibold">
                 Remove
               </Button>
             </Popconfirm>
 
             <Button
+             htmlType=""
               onClick={() => {
                 setIdUser(id);
                 showDrawer();
@@ -221,7 +230,7 @@ const UserList = () => {
           </Form.Item> */}
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button   type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>

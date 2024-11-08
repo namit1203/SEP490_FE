@@ -18,7 +18,7 @@ const Bookingconfirmation = () => {
               <label className="block text-gray-700">Tên người đi *</label>
               <input
                 type="text"
-                value="THÀNH ĐÔ VŨ"
+                value="NAM SON LE"
                 className="w-full p-2 border rounded mt-1"
                 readOnly
               />
@@ -37,7 +37,7 @@ const Bookingconfirmation = () => {
                 <label className="block text-gray-700">Số điện thoại *</label>
                 <input
                   type="text"
-                  value="566730000"
+                  value="776459506"
                   className="w-full p-2 border rounded mt-1"
                   readOnly
                 />
@@ -49,7 +49,7 @@ const Bookingconfirmation = () => {
               </label>
               <input
                 type="email"
-                value="thanhdo9xi@gmail.com"
+                value="namit291203@gmail.com"
                 className="w-full p-2 border rounded mt-1"
                 readOnly
               />

@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
+import { checkLoginToken } from "../utils";
 const Home = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [checkTab, setChecktab] = useState("login");
+  const [otp, setOtp] = useState(false);
+  const [otpInput, setOtpInput] = useState(null);
   const [dataSearch, setDataSearch] = useState({
     startPoint: "",
     endPoint: "",
@@ -14,14 +17,15 @@ const Home = () => {
   });
   console.log(dataSearch, "dataSearchdataSearch");
   const navigate = useNavigate();
-  const [dataLogin, setDataLogin] = useState({
+  const initValueLogin = {
     id: 0,
     username: "",
     email: "string",
     numberPhone: "string",
     password: "",
     roleName: "string",
-  });
+  };
+  const [dataLogin, setDataLogin] = useState(initValueLogin);
   const [dataSignup, setDataSignup] = useState({
     id: 0,
     username: "",
@@ -45,6 +49,18 @@ const Home = () => {
         if (data) {
           message.success("Login successful");
           localStorage.setItem("token", data);
+          const responseCheckLogin = await axios.get(
+            "http://103.245.237.93:8082/api/Auth/userProfile",
+            {
+              headers: {
+                Authorization: "Bearer " + data,
+              },
+            }
+          );
+          localStorage.setItem(
+            "profile",
+            JSON.stringify(responseCheckLogin.data)
+          );
           setOpenLogin(false);
         } else {
           message.error("Login faild");
@@ -52,17 +68,33 @@ const Home = () => {
         console.log(data, "dataLogin");
       } else {
         const { data } = await axios.post(
-          "http://103.245.237.93:8082/api/Auth",
+          "http://103.245.237.93:8082/api/Auth/register",
           dataSignup
         );
         if (data) {
           message.success("successful");
           setChecktab("login");
+          setOtp(true);
         } else {
           message.error("Login faild");
         }
         console.log(data, "dataLogin");
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handelCheckOtp = async () => {
+    try {
+      //
+      const dataPayload = {
+        email: dataSignup.email,
+        code: otpInput,
+      };
+      const { data } = await axios.post(
+        "http://103.245.237.93:8082/api/Auth/confirm",
+        dataPayload
+      );
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +122,6 @@ const Home = () => {
                 <div className="ant-modal-content">
                   <button
                     onClick={() => setOpenLogin(false)}
-                    type="button"
                     aria-label="Close"
                     className="ant-modal-close"
                   >
@@ -145,61 +176,84 @@ const Home = () => {
                               </div>
                             </>
                           )}
-                          <span className="core__Text-sc-1c81tsc-1 hDnryH">
-                            Tên đăng nhập
-                          </span>
-                          <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
-                            <input
-                              onChange={(e) => {
-                                checkTab == "login"
-                                  ? setDataLogin({
-                                      ...dataLogin,
-                                      username: e.target.value,
-                                    })
-                                  : setDataSignup({
-                                      ...dataSignup,
-                                      username: e.target.value,
-                                    });
-                              }}
-                              value={
-                                checkTab == "login"
-                                  ? dataLogin.username
-                                  : dataSignup.username
-                              }
-                              className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
-                              type="text"
-                            />
-                          </div>
-                          <span className="core__Text-sc-1c81tsc-1 hDnryH mt-2">
-                            Mật khẩu
-                          </span>
-                          <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
-                            <input
-                              onChange={(e) => {
-                                checkTab == "login"
-                                  ? setDataLogin({
-                                      ...dataLogin,
-                                      password: e.target.value,
-                                    })
-                                  : setDataSignup({
-                                      ...dataSignup,
-                                      password: e.target.value,
-                                    });
-                              }}
-                              value={
-                                checkTab == "login"
-                                  ? dataLogin.password
-                                  : dataSignup.password
-                              }
-                              className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
-                              type="password"
-                            />
-                          </div>
+                          {otp && (
+                            <>
+                              <span className="core__Text-sc-1c81tsc-1 hDnryH">
+                                {otp ? "Nhập mã OTP" : "Tên đăng nhập"}
+                              </span>
+                              <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
+                                <input
+                                  onChange={(e) => {
+                                    setOtpInput(e.target.value);
+                                  }}
+                                  value={otpInput}
+                                  className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
+                                  type="text"
+                                />
+                              </div>
+                            </>
+                          )}
+                          {!otp && (
+                            <>
+                              <span className="core__Text-sc-1c81tsc-1 hDnryH">
+                                {otp ? "Nhập mã OTP" : "Tên đăng nhập"}
+                              </span>
+
+                              <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
+                                <input
+                                  onChange={(e) => {
+                                    checkTab == "login"
+                                      ? setDataLogin({
+                                          ...dataLogin,
+                                          username: e.target.value,
+                                        })
+                                      : setDataSignup({
+                                          ...dataSignup,
+                                          username: e.target.value,
+                                        });
+                                  }}
+                                  value={
+                                    checkTab == "login"
+                                      ? dataLogin.username
+                                      : dataSignup.username
+                                  }
+                                  className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
+                                  type="text"
+                                />
+                              </div>
+                              <span className="core__Text-sc-1c81tsc-1 hDnryH mt-2">
+                                Mật khẩu
+                              </span>
+                              <div className="base__HStack-sc-1tvbuqk-47 QePTd ">
+                                <input
+                                  onChange={(e) => {
+                                    checkTab == "login"
+                                      ? setDataLogin({
+                                          ...dataLogin,
+                                          password: e.target.value,
+                                        })
+                                      : setDataSignup({
+                                          ...dataSignup,
+                                          password: e.target.value,
+                                        });
+                                  }}
+                                  value={
+                                    checkTab == "login"
+                                      ? dataLogin.password
+                                      : dataSignup.password
+                                  }
+                                  className="ant-input ant-input-lg PhoneInput__StyledInput-sc-1oxca4h-1 kDZNIW"
+                                  type="password"
+                                />
+                              </div>
+                            </>
+                          )}
 
                           <button
-                            onClick={handelLogin}
+                            onClick={() => {
+                              otp ? handelCheckOtp() : handelLogin();
+                            }}
                             id="btn-phone-auth"
-                            type="button"
                             className="ant-btn ant-btn-lg ant-btn-block"
                             style={{ marginTop: 10 }}
                           >
@@ -212,10 +266,7 @@ const Home = () => {
                         >
                           <span className="ant-divider-inner-text">hoặc</span>
                         </div>
-                        <button
-                          type="button"
-                          className="ant-btn ant-btn-primary ant-btn-lg ant-btn-block"
-                        >
+                        <button className="ant-btn ant-btn-primary ant-btn-lg ant-btn-block">
                           <span>Tiếp tục với Google</span>
                         </button>
                       </div>
@@ -227,7 +278,6 @@ const Home = () => {
                               ? setChecktab("signup")
                               : setChecktab("login");
                           }}
-                          type="button"
                           className="ant-btn ant-btn-link ant-btn-sm"
                         >
                           <span>
@@ -1198,7 +1248,6 @@ const Home = () => {
                             }}
                             data-testid="SearchWidget.search"
                             data-tracking-event="search_tickets"
-                            type="button"
                             className="ant-btn DesktopSearchWidgetInterface__ButtonDateStyled-sc-9goqqe-0 DesktopSearchWidgetInterface__ButtonSearchStyled-sc-9goqqe-1 kvbcsM jfbJs button-search ant-btn-block"
                           >
                             <span>Tìm kiếm</span>
@@ -1265,7 +1314,6 @@ const Home = () => {
                     dir="ltr"
                   >
                     <button
-                      type="button"
                       data-role="none"
                       className="slick-arrow slick-prev slick-disabled"
                       style={{ display: "block" }}
@@ -1589,7 +1637,6 @@ const Home = () => {
                       </div>
                     </div>
                     <button
-                      type="button"
                       data-role="none"
                       className="slick-arrow slick-next"
                       style={{ display: "block" }}
@@ -3325,11 +3372,7 @@ const Home = () => {
                 style={{ width: 0, height: 0, overflow: "hidden" }}
               />
               <div className="ant-modal-content">
-                <button
-                  type="button"
-                  aria-label="Close"
-                  className="ant-modal-close"
-                >
+                <button aria-label="Close" className="ant-modal-close">
                   <span className="ant-modal-close-x">
                     <i
                       aria-label="icon: close"

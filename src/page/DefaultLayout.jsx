@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { AppContext } from "../context/app.context";
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -19,10 +20,22 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
+  getItem(
+    <NavLink to={`/dashboard/LossCostType`}>LossCostType</NavLink>,
+    "sub1123",
+    <UserOutlined />
+  ),
+];
+const itemsStaff = [
   getItem("dashboard", "1", <PieChartOutlined />),
   getItem(
     <NavLink to={`/dashboard/user`}>User</NavLink>,
     "sub1",
+    <UserOutlined />
+  ),
+  getItem(
+    <NavLink to={`/dashboard/trip`}>Trip</NavLink>,
+    "sub1xxxx",
     <UserOutlined />
   ),
   getItem(
@@ -56,7 +69,7 @@ const DefaultLayout = () => {
   const dropdown = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const trigger = useRef(null);
-
+  const {profile} = useContext(AppContext)
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -75,17 +88,15 @@ const DefaultLayout = () => {
               >
                 <span className="lg:block hidden text-right">
                   <span className="text-white block text-sm font-medium ">
-                    admin
+                  {profile?.username}
                   </span>
-                  <span className="block text-xs capitalize text-white">
+                  {/* <span className="block text-xs capitalize text-white">
                     staff
-                  </span>
+                  </span> */}
                 </span>
-
                 <span className="w-12 h-12 rounded-full">
                   <Avatar />
                 </span>
-
                 <span>
                   <svg
                     className={`hidden fill-current sm:block ${
@@ -200,7 +211,7 @@ const DefaultLayout = () => {
             theme="dark"
             defaultSelectedKeys={["1"]}
             mode="inline"
-            items={items}
+            items={itemsStaff}
           />
         </Sider>
         <Layout>

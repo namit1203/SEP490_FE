@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { checkLoginToken } from "../utils";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Avatar } from "antd";
+import { AppContext } from "../context/app.context";
 
 const Header = ({ setOpenLogin }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -9,6 +10,8 @@ const Header = ({ setOpenLogin }) => {
   const dropdown = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const trigger = useRef(null);
+  const { profile } = useContext(AppContext);
+  console.log(profile, "profile");
   return (
     <div>
       <div className="Navbar2__Container-sa2air-0 jblxKL undefined header-container">
@@ -112,11 +115,11 @@ const Header = ({ setOpenLogin }) => {
                       >
                         <span className="lg:block hidden text-right">
                           <span className="text-black font-bold block text-sm  ">
-                            admin
+                            {profile?.username}
                           </span>
-                          <span className="block text-xs capitalize text-black font-bold">
+                          {/* <span className="block text-xs capitalize text-black font-bold">
                             staff
-                          </span>
+                          </span> */}
                         </span>
 
                         <span className="w-12 h-12 rounded-full">
@@ -215,7 +218,6 @@ const Header = ({ setOpenLogin }) => {
               ) : (
                 <button
                   onClick={() => setOpenLogin(true)}
-                  type="button"
                   className="ant-btn Button__ButtonStyled-sc-1podjgv-0 font-bold jWyAAs btn-secondary btn-sm LoginButton__StyledButton-sc-6y3h9m-0 eKIwDQ"
                 >
                   <span>Đăng nhập</span>
