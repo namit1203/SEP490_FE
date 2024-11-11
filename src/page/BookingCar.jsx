@@ -62,82 +62,7 @@ const BookingCar = () => {
   const onChange = (key) => {
     console.log(key);
   };
-  const discounts = [
-    {
-      title: "BẠN MỚI (VEXERE)",
-      discount: "Giảm 25%, tối đa 50k",
-      condition: "Đơn hàng tối đa 2 vé",
-      expiry: "HSD: T5, 31/10",
-      image: "/voucher.png",
-    },
-    {
-      title: "THANH TOÁN",
-      discount: "Giảm 100k",
-      condition: "Đơn hàng tối thiểu 450k",
-      expiry: "HSD: T5, 31/10",
-      image: "/voucher.png",
-    },
-    {
-      title: "GIỜ VÀNG",
-      discount: "Giảm 20%, tối đa 250k",
-      condition: "Đơn hàng tối đa 1 vé",
-      expiry: "Sắp diễn ra! Hiệu lực từ 12:00 - T3, 29/...",
-      image: "/voucher.png",
-    },
-    {
-      title: "THANH TOÁN",
-      discount: "Giảm 20%",
-      condition: "Đơn hàng không giới hạn s...",
-      expiry: "HSD: T7, 30/11",
-      image: "/voucher.png",
-    },
-    {
-      title: "THANH TOÁN",
-      discount: "Giảm 20k",
-      condition: "Đơn hàng tối thiểu 200k",
-      expiry: "HSD: T5, 19/12",
-      image: "/voucher.png",
-    },
-    {
-      title: "THANH TOÁN",
-      discount: "Giảm 50k",
-      condition: "Đơn hàng tối đa 60k",
-      expiry: "HSD: T5, 19/12",
-      image: "/voucher.png",
-    },
-  ];
   const itemsV1 = [
-    {
-      key: "1",
-      label: "Giảm giá",
-      children: (
-        <div className="p-4">
-          <div className="grid grid-cols-2 gap-4">
-            {discounts.map((discount, index) => (
-              <div key={index} className="border rounded-lg p-4 flex">
-                <img
-                  src={discount.image}
-                  alt="Discount image"
-                  className="w-12 h-12 mr-4"
-                />
-                <div>
-                  <div className="text-blue-600 font-bold">
-                    {discount.title}
-                  </div>
-                  <div className="text-lg font-bold">{discount.discount}</div>
-                  <div>{discount.condition}</div>
-                  <div className="text-gray-500">{discount.expiry}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 text-blue-600 cursor-pointer">
-            <i className="fas fa-exclamation-circle"></i> Báo cáo sai / thiếu
-            thông tin
-          </div>
-        </div>
-      ),
-    },
     {
       key: "2",
       label: "Đón/trả",
@@ -1035,7 +960,7 @@ const BookingCar = () => {
                       </div>
                       <div className="text-right">
                         <span className="block font-bold text-lg text-blue-500">
-                          Từ {items?.listVehicle?.[0]?.price?.toLocaleString()}đ
+                          Từ {items?.price?.toLocaleString()}đ
                         </span>
                         <button
                           onClick={() => {
@@ -1303,7 +1228,7 @@ const BookingCar = () => {
                                       </svg>
                                     </div>
                                     <span>CABIN ĐƠN</span>
-                                    <span className="ml-2">400,000đ</span>
+                                    {/* <span className="ml-2">400,000đ</span> */}
                                   </div>
                                   <div className="flex items-center mb-2">
                                     <div
@@ -1352,7 +1277,7 @@ const BookingCar = () => {
                                       </svg>
                                     </div>
                                     <span>CABIN ĐÔI</span>
-                                    <span className="ml-2">750,000đ</span>
+                                    {/* <span className="ml-2">750,000đ</span> */}
                                   </div>
                                 </div>
                                 <div className="w-2/3 flex justify-between">
@@ -1489,18 +1414,18 @@ const BookingCar = () => {
                                 </span>
                               </div>
                               <div>
-                                <span>
+                                {/* <span>
                                   Tổng cộng:{" "}
                                   <span className="font-bold text-blue-600">
-                                    750,000 đ
+                                    {TripDetails} đ
                                   </span>
-                                </span>
+                                </span> */}
                                 <button
                                   onClick={() => {
                                     if (!selectAddress) {
                                       setSelectAddress(true);
                                     } else {
-                                      navigate("/bookingconfirmation");
+                                      navigate("/bookingconfirmation/"+items.id);
                                     }
                                   }}
                                   className="ml-4 bg-blue-600 text-white px-4 py-2 rounded"

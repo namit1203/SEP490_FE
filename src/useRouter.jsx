@@ -47,11 +47,11 @@ export default function useRouteElements() {
     },
 
     {
-      path: "/bookingconfirmation",
+      path: "/bookingconfirmation/:id",
       element: <Bookingconfirmation />,
     },
     {
-      path: "/payment-method",
+      path: "/payment-method/:id",
       element: <PaymentMethod />,
     },
     { path: "/renter", element: <RenterCar /> },

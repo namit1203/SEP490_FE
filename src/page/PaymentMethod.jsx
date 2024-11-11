@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
+import { checkLoginToken } from "../utils";
+import axios from "axios";
 
 const PaymentMethod = () => {
+  const [promotion, setPromotion] = useState([]);
+  const handelFetchData = async () => {
+    const { data } = await axios.get(
+      "http://103.245.237.93:8082/api/Promotion",
+      {
+        headers: {
+          Authorization: "Bearer " + checkLoginToken(),
+        },
+      }
+    );
+    const currentDate = new Date();
+    const validPromotions = data.filter(
+      (item) => new Date(item.endDate) > currentDate
+    );
+    setPromotion(validPromotions);
+  };
+  useEffect(()=>{
+    handelFetchData()
+  },[])
   return (
     <div>
         <Header/>
