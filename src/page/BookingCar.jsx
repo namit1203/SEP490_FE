@@ -1025,15 +1025,24 @@ const BookingCar = () => {
                                           <input
                                             type="radio"
                                             id="pickup1"
+                                            onChange={(e) => {
+                                              localStorage.setItem(
+                                                "startTime",
+                                                stp?.timeStartDetils
+                                              );
+                                              localStorage.setItem(
+                                                "startPoint",
+                                                stp?.pointStartDetails
+                                              );
+                                            }}
                                             name="pickup"
                                             className="mr-2"
                                           />
                                           <label htmlFor="pickup1">
                                             <span className="font-bold">
-                                             {stp?.timeStartDetils}
+                                              {stp?.timeStartDetils}
                                             </span>{" "}
                                             • {stp?.pointStartDetails}
-                                          
                                           </label>
                                           <div className="text-green-600">
                                             Cách vị trí của bạn 7.6 km
@@ -1064,16 +1073,25 @@ const BookingCar = () => {
                                         <div key={index} className="mb-4">
                                           <input
                                             type="radio"
-                                            id="pickup1"
-                                            name="pickup"
+                                            id="pickup2"
+                                            name="pickup2"
                                             className="mr-2"
+                                            onChange={(e) => {
+                                              localStorage.setItem(
+                                                "endTime",
+                                                stp?.timeEndDetails
+                                              );
+                                              localStorage.setItem(
+                                                "endPoint",
+                                                stp?.pointEndDetails
+                                              );
+                                            }}
                                           />
                                           <label htmlFor="pickup1">
                                             <span className="font-bold">
-                                             {stp?.timeEndDetails}
+                                              {stp?.timeEndDetails}
                                             </span>{" "}
                                             • {stp?.pointEndDetails}
-                                          
                                           </label>
                                           <div className="text-green-600">
                                             Cách vị trí của bạn 7.6 km
@@ -1422,10 +1440,16 @@ const BookingCar = () => {
                                 </span> */}
                                 <button
                                   onClick={() => {
+                                    localStorage.setItem(
+                                      "priceTrip",
+                                      items?.price
+                                    );
                                     if (!selectAddress) {
                                       setSelectAddress(true);
                                     } else {
-                                      navigate("/bookingconfirmation/"+items.id);
+                                      navigate(
+                                        "/bookingconfirmation/" + items.id
+                                      );
                                     }
                                   }}
                                   className="ml-4 bg-blue-600 text-white px-4 py-2 rounded"

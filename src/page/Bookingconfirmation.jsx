@@ -60,11 +60,11 @@ const Bookingconfirmation = () => {
           },
         }
       );
-      console.log(response,'response')
-      message.success("booking success")
-      setTimeout(()=>{
-        navigate('/profile')
-      },300)
+      console.log(response, "response");
+      message.success("booking success");
+      setTimeout(() => {
+        navigate("/profile");
+      }, 300);
     } catch (error) {
       //
     }
@@ -196,7 +196,9 @@ const Bookingconfirmation = () => {
               </div>
             </div>
             <h2 className="text-xl font-semibold mb-4">Tạm tính</h2>
-            <div className="text-2xl font-bold text-gray-800">750.000đ</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {localStorage.getItem("priceTrip")}đ
+            </div>
             <button
               onClick={handelBookTrip}
               className="w-full mt-5 bg-yellow-500 text-white py-2 rounded font-bold"
@@ -361,15 +363,15 @@ const Bookingconfirmation = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Thông tin chuyến đi</h2>
-            <div className="flex items-center mb-4">
+            {/* <div className="flex items-center mb-4">
               <i className="fas fa-calendar-alt text-blue-600 mr-2"></i>
               <span className="text-gray-700">T3, 29/10/2024</span>
               <span className="ml-auto text-gray-700">1</span>
               <a href="#" className="text-blue-600 ml-4">
                 Chi tiết
               </a>
-            </div>
-            <div className="flex items-center mb-4">
+            </div> */}
+            {/* <div className="flex items-center mb-4">
               <img
                 src="https://placehold.co/50x50"
                 alt="Image of Sao Việt bus"
@@ -381,57 +383,18 @@ const Bookingconfirmation = () => {
                   Limousine giường phòng 21 chỗ
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="mb-4">
-              {promotionId?.map((dt, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="mb-4 p-4 border rounded-lg shadow-md bg-white"
-                  >
-                    <div className="mb-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-1">
-                        Point Start Details
-                      </label>
-                      <input
-                        value={dt.pointStartDetails}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        readOnly
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-1">
-                        Point End Details
-                      </label>
-                      <input
-                        value={dt.pointEndDetails}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        readOnly
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-1">
-                        Time Start Details
-                      </label>
-                      <input
-                        value={dt.timeStartDetils}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        readOnly
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-1">
-                        Time End Details
-                      </label>
-                      <input
-                        value={dt.timeEndDetails}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+              <div className="flex items-center mb-4">
+                <i className="fas fa-clock text-blue-500 mr-2"></i>
+                <p className="font-bold">{localStorage.getItem("startTime")}</p>
+                <p className="ml-2">{localStorage.getItem("startPoint")}</p>
+              </div>
+              <div className="flex items-center">
+                <i className="fas fa-clock text-blue-500 mr-2"></i>
+                <p className="font-bold">{localStorage.getItem("endTime")}</p>
+                <p className="ml-2">{localStorage.getItem("endPoint")}</p>
+              </div>
             </div>
           </div>
         </div>
