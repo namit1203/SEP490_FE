@@ -18,6 +18,12 @@ import LossCostType from "./page/admin/LossCostType/LossCostType";
 import TripList from "./page/admin/managerTrip/TripList";
 import RenterCar from "./page/RenterCar";
 import RewardPoints from "./page/profile/RewardPoints";
+import DetaillTicket from "./page/DetaillTicket";
+import Convenient from "./page/Convenient";
+import FixedCosts from "./page/admin/fixedCosts/FixedCosts";
+import Analytics from "./page/admin/analytics/Analytics";
+import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver";
+import TypeOfDriver from "./page/admin/TypeOfDriver/TypeOfDriver";
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -45,7 +51,10 @@ export default function useRouteElements() {
       path: "/bookingCar",
       element: <BookingCar />,
     },
-
+    {
+      path: "/ticket-detail/:id",
+      element: <DetaillTicket />,
+    },
     {
       path: "/bookingconfirmation/:id",
       element: <Bookingconfirmation />,
@@ -55,6 +64,7 @@ export default function useRouteElements() {
       element: <PaymentMethod />,
     },
     { path: "/renter", element: <RenterCar /> },
+    { path: "/convenient", element: <Convenient /> },
     {
       path: "/checkout",
       element: <Checkout />,
@@ -63,6 +73,8 @@ export default function useRouteElements() {
       path: "/dashboard",
       element: <DefaultLayout />,
       children: [
+        { path: "analytics", element: <Analytics /> },
+        { path: "HistoryRentDriver", element: <HistoryRentDriver /> },
         { path: "user", element: <UserList /> },
         { path: "role", element: <RoleList /> },
         { path: "driver", element: <DriverList /> },
@@ -70,7 +82,10 @@ export default function useRouteElements() {
         { path: "request", element: <ListRequest /> },
         { path: "vehicle", element: <VehicleList /> },
         { path: "lossCostType", element: <LossCostType /> },
+        { path: "fixedCosts", element: <FixedCosts /> },
         { path: "trip", element: <TripList /> },
+        { path: "typeOfDriver", element: <TypeOfDriver /> },
+
       ],
     },
   ]);
