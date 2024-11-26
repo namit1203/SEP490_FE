@@ -7,6 +7,9 @@ import axios from "axios";
 import { checkLoginToken } from "../utils";
 import { AppContext } from "../context/app.context";
 import ReviewComponent from "./ReviewComponent";
+import dayjs from "dayjs";
+
+
 const BookingCar = () => {
   const [showOption, setShowOption] = useState(null);
   const [checkSelect, setCheckSelect] = useState(false);
@@ -18,6 +21,14 @@ const BookingCar = () => {
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
   const [reviewDb, setReviewDb] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [selectedSeats, setSelectedSeats] = useState(0);
+  // const [maxSeats, setMaxSeats] = useState(0);
+  // const [canProceed, setCanProceed] = useState(false); // Điều khiển nút
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  // const [selectAddress, setSelectAddress] = useState(false);
+  //  const maxSeats = items.listVehicle[0]?.numberSeat;
+  // const [selectedSeats, setSelectedSeats] = useState(0);
   const [checkNumberSeat, setCheckNumberSeat] = useState(0);
 
   const [params, setParams] = useState({
@@ -25,6 +36,7 @@ const BookingCar = () => {
     endPoint: "",
     time: "",
   });
+
   const initializeParamsFromURL = () => {
     const searchParams = new URLSearchParams(location.search);
     setParams({
@@ -33,36 +45,94 @@ const BookingCar = () => {
       time: searchParams.get("time") || "",
     });
   };
-  const handelFetchData = async () => {
+
+
+  const handleFetchData = async () => {
     try {
-      const { data } = await axios.get(
-        // `http://103.245.237.93:8082/api/Trip/searchTrip/startPoint/endPoint/time`,
-        `http://103.245.237.93:8082/api/Trip`,
+      const formattedTime = params.time || ""; // Định dạng ngày giờ từ params.time
+  
+      console.log("Fetching trips with params:", {
+        startPoint: params.startPoint,
+        endPoint: params.endPoint,
+        time: formattedTime,
+      });
+  
+      // Gọi API để tìm danh sách chuyến đi
+      const { data: tripData } = await axios.get(
+        "https://boring-wiles.202-92-7-204.plesk.page/api/Trip/searchTrip/startPoint/endPoint/time",
         {
           params: {
             startPoint: params.startPoint,
             endPoint: params.endPoint,
-            time: params.time,
+            time: formattedTime, // Gửi cả ngày và giờ
           },
           headers: {
             Authorization: "Bearer " + checkLoginToken(),
           },
         }
       );
-      setDataCar(data);
+  
+      console.log("Trip API Response:", tripData);
+  
+      if (!Array.isArray(tripData)) {
+        console.error("Trip data is not an array:", tripData);
+        setDataCar([]);
+        return;
+      }
+  
+      // Lặp qua từng chuyến đi để lấy số ghế khả dụng
+      const tripDetails = await Promise.all(
+        tripData.map(async (trip) => {
+          try {
+            const { data: seatData } = await axios.get(
+              `https://boring-wiles.202-92-7-204.plesk.page/api/Vehicle/getNumberSeatAvaiable/${trip.id}`,
+              {
+                headers: {
+                  Authorization: "Bearer " + checkLoginToken(),
+                },
+              }
+            );
+  
+            console.log(`Seat Data for Trip ${trip.id}:`, seatData);
+  
+            if (typeof seatData !== "number") {
+              console.error(
+                `Invalid seat data for trip ID ${trip.id}:`,
+                seatData
+              );
+              return { ...trip, availableSeats: "Không xác định" };
+            }
+  
+            return { ...trip, availableSeats: seatData };
+          } catch (error) {
+            console.error(`Error fetching seats for trip ID ${trip.id}:`, error);
+            return { ...trip, availableSeats: "Lỗi lấy dữ liệu" };
+          }
+        })
+      );
+  
+      console.log("Final Trip Details with Seats:", tripDetails);
+  
+      setDataCar(tripDetails);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching trip data:", error);
+      setDataCar([]);
     }
   };
+  
+
+
   useEffect(() => {
     initializeParamsFromURL();
   }, [location.search]);
+
   const handleSearchClick = () => {
     navigate({
       search: createSearchParams(params).toString(),
     });
-    handelFetchData();
+    handleFetchData();
   };
+
   const navigate = useNavigate();
   const onChange = (key) => {
     console.log(key);
@@ -133,6 +203,15 @@ const BookingCar = () => {
               <a href="#">Báo cáo sai/thiếu thông tin</a>
             </div>
           </div>
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: "Số ghế còn lại",
+      children: (
+        <div className="pl-5">
+          <p className="font-bold text-black text-xl">{checkNumberSeat} ghế</p>
         </div>
       ),
     },
@@ -304,7 +383,6 @@ const BookingCar = () => {
         </div>
       ),
     },
-
     {
       key: "6",
       label: "Review",
@@ -314,15 +392,7 @@ const BookingCar = () => {
         </div>
       ),
     },
-    {
-      key: "7",
-      label: "Số ghế ",
-      children: (
-        <div className="pl-5">
-          <p className="font-bold text-black text-xl">{checkNumberSeat} ghế</p>
-        </div>
-      ),
-    },
+    
   ];
   const handelFetchApi = async (id) => {
     try {
@@ -331,30 +401,23 @@ const BookingCar = () => {
           idc: id,
         }).toString(),
       });
-      const [
-        dataTripDetail,
-        dataPointStart,
-        dataPointEnd,
-        reviewData,
-        numberSeat,
-      ] = await Promise.allSettled([
-        axios.get(
-          "http://103.245.237.93:8082/api/TripDetails/tripId?TripId=" + id
-        ),
-        axios.get(
-          "http://103.245.237.93:8082/api/TripDetails/startPoint/tripId?TripId=" +
-            id
-        ),
-        axios.get(
-          "http://103.245.237.93:8082/api/TripDetails/endPoint/tripId?TripId=" +
-            id
-        ),
-        axios.get("http://103.245.237.93:8082/api/Review"),
-        axios.get(
-          "http://103.245.237.93:8082/api/Vehicle/getNumberSeatAvaiable?vehicelId=" +
-            id
-        ),
-      ]);
+      const [dataTripDetail, dataPointStart, dataPointEnd, reviewData, numberSeat] =
+        await Promise.allSettled([
+          axios.get(
+            "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" + id
+          ),
+          axios.get(
+            "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" + id
+          ),
+          axios.get(
+            "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" + id
+          ),
+          axios.get("http://103.245.237.93:8082/api/Review"),
+          axios.get(
+            "http://103.245.237.93:8082/api/Vehicle/getNumberSeatAvaiable?vehicelId=" +
+              id),
+
+        ]);
       console.log(dataTripDetail.value, "dataTripDetail.value");
       if (dataTripDetail.status == "fulfilled") {
         setTripDetails(dataTripDetail.value.data);
@@ -368,8 +431,7 @@ const BookingCar = () => {
       if (reviewData.status == "fulfilled") {
         const newDt = reviewData.value.data?.filter((itc) => itc.tripId == id);
         setReviewDb(newDt);
-      }
-      if (numberSeat.status == "fulfilled") {
+      }if (numberSeat.status == "fulfilled") {
         setCheckNumberSeat(numberSeat.value.data);
       }
     } catch (error) {
@@ -479,11 +541,11 @@ const BookingCar = () => {
                                       </svg>
                                     </div>
                                     <span className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp">
-                                      270K
+                                      Xe liên tỉnh
                                     </span>
                                   </span>
                                 </div>
-                                <div
+                                {/* <div
                                   role="tab"
                                   aria-disabled="false"
                                   aria-selected="false"
@@ -514,8 +576,8 @@ const BookingCar = () => {
                                       -20K
                                     </span>
                                   </span>
-                                </div>
-                                <div
+                                </div> */}
+                                {/* <div
                                   role="tab"
                                   aria-disabled="false"
                                   aria-selected="false"
@@ -549,7 +611,7 @@ const BookingCar = () => {
                                       Vé Tết
                                     </span>
                                   </span>
-                                </div>
+                                </div> */}
                               </div>
                               <div
                                 className="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
@@ -847,19 +909,31 @@ const BookingCar = () => {
                                       <label className="base__BodyHighlight-sc-1tvbuqk-22 bcCBBz color--light-disable">
                                         Ngày đi
                                       </label>
-                                      <input
-                                        type="datetime-local"
+
+                                      {/* <input
+                                        type="date"
                                         onChange={(e) => {
                                           const value = e.target.value;
-                                          const formattedValue =
-                                            value.replace("T", " ") + ":00";
+                                          // const formattedValue =
+                                          //   value.replace("T", " ") + ":00";
                                           setParams({
                                             ...params,
-                                            time: formattedValue,
+                                            time: value,
                                           });
                                         }}
-                                        defaultValue={params.time}
+                                        // defaultValue={params.time}
                                         value={params.time}
+                                      /> */}
+                                      <input
+                                        type="datetime-local" // Đổi sang datetime-local để chọn cả ngày và giờ
+                                        onChange={(e) => {
+                                          const value = e.target.value; // Lấy giá trị từ input (cả ngày và giờ)
+                                          setParams({
+                                            ...params,
+                                            time: value, // Cập nhật tham số time với giá trị mới
+                                          });
+                                        }}
+                                        value={params.time} // Hiển thị giá trị hiện tại nếu có
                                       />
                                     </div>
                                   </div>
@@ -920,7 +994,7 @@ const BookingCar = () => {
           {/* Sidebar Filters */}
           <div className="w-1/4 p-4 bg-gray-100">
             {/* Sort options */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <h2 className="font-bold text-lg mb-2">Sắp xếp</h2>
               <ul className="space-y-2">
                 <li>
@@ -948,9 +1022,9 @@ const BookingCar = () => {
                   <label htmlFor="price-desc">Giá giảm dần</label>
                 </li>
               </ul>
-            </div>
+            </div> */}
             {/* Filter options */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <h2 className="font-bold text-lg mb-2">Lọc</h2>
               <div>
                 <h3 className="font-bold mb-1">Giờ đi</h3>
@@ -980,7 +1054,7 @@ const BookingCar = () => {
                   <option>400.000đ+</option>
                 </select>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Result list */}
@@ -1003,10 +1077,16 @@ const BookingCar = () => {
                           {items?.startTime} - {items?.pointStart}
                         </p>
                         <p className="text-sm">{items?.pointEnd}</p>
+                        {/* <p className="text-sm">
+                          Số ghế khả dụng:{" "}
+                          {checkNumberSeat !== null
+                            ? items?.availableSeats
+                            : "Không có thông tin"}
+                        </p> */}
                       </div>
                       <div className="text-right">
                         <span className="block font-bold text-lg text-blue-500">
-                          Từ {items?.price?.toLocaleString()}đ
+                          Từ {Number(localStorage.getItem("priceTrip"))}đ
                         </span>
                         <button
                           onClick={() => {
@@ -1198,18 +1278,41 @@ const BookingCar = () => {
                                         />
                                       </svg>
                                     </div>
+
                                     <div className="flex items-center w-full gap-3">
                                       <input
                                         onChange={(e) => {
-                                          localStorage.setItem(
-                                            "quantity",
-                                            e.target.value
-                                          );
+                                          const selectedSeats = parseInt(
+                                            e.target.value,
+                                            10
+                                          ); // Lấy số ghế đã nhập
+                                         
+                                          if (
+                                            isNaN(selectedSeats) ||
+                                            selectedSeats <= 0
+                                          ) {
+                                            setErrorMessage(
+                                              "Vui lòng chọn ít nhất 1 ghế."
+                                            );
+                                            setIsButtonDisabled(true); // Vô hiệu hóa nút
+                                          } else if (selectedSeats > checkNumberSeat) {
+                                            setErrorMessage(
+                                              `Số lượng ghế không được vượt quá ${checkNumberSeat}.`
+                                            );
+                                            setIsButtonDisabled(true); // Vô hiệu hóa nút
+                                          } else {
+                                            setErrorMessage(""); // Xóa lỗi nếu hợp lệ
+                                            setIsButtonDisabled(false); // Kích hoạt nút
+                                            localStorage.setItem(
+                                              "quantity",
+                                              selectedSeats
+                                            ); // Lưu số ghế vào localStorage
+                                          }
                                         }}
                                         type="number"
                                         className="form-control w-1/3"
-                                        placeholder="Username"
-                                        aria-label="Username"
+                                        placeholder="Số lượng ghế"
+                                        aria-label="Số lượng ghế"
                                         aria-describedby="basic-addon1"
                                       />
                                       <label className="w-2/3">
@@ -1230,28 +1333,33 @@ const BookingCar = () => {
                                   </span>
                                 </span>
                               </div>
+
                               <div>
-                                {/* <span>
-                                  Tổng cộng:{" "}
-                                  <span className="font-bold text-blue-600">
-                                    {TripDetails} đ
-                                  </span>
-                                </span> */}
+                                {errorMessage && (
+                                  <div className="mt-2 text-red-500 text-sm font-bold">
+                                    {errorMessage}
+                                  </div>
+                                )}
                                 <button
                                   onClick={() => {
                                     localStorage.setItem(
                                       "priceTrip",
-                                      items?.price
+                                      items.listVehicle[0]?.price
                                     );
                                     if (!selectAddress) {
                                       setSelectAddress(true);
                                     } else {
                                       navigate(
-                                        "/bookingconfirmation/" + items.id
+                                        `/bookingconfirmation/${items.id}`
                                       );
                                     }
                                   }}
-                                  className="ml-4 bg-blue-600 text-white px-4 py-2 rounded"
+                                  disabled={isButtonDisabled} // Nút bị vô hiệu hóa nếu giá trị không hợp lệ
+                                  className={`ml-4 px-4 py-2 rounded ${
+                                    isButtonDisabled
+                                      ? "bg-gray-400 cursor-not-allowed"
+                                      : "bg-blue-600 text-white cursor-pointer"
+                                  }`}
                                 >
                                   Tiếp tục
                                 </button>
