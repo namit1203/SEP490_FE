@@ -1,19 +1,24 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import { useEffect, useState } from "react";
-import { Tabs } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { Button, Tabs } from "antd";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { checkLoginToken } from "../utils";
+import { AppContext } from "../context/app.context";
+import ReviewComponent from "./ReviewComponent";
 const BookingCar = () => {
   const [showOption, setShowOption] = useState(null);
   const [checkSelect, setCheckSelect] = useState(false);
   const [selectAddress, setSelectAddress] = useState(false);
   const location = useLocation();
+  const { profile } = useContext(AppContext);
   const [dataCar, setDataCar] = useState([]);
   const [TripDetails, setTripDetails] = useState([]);
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
+  const [reviewDb, setReviewDb] = useState([]);
+  const [checkNumberSeat, setCheckNumberSeat] = useState(0);
 
   const [params, setParams] = useState({
     startPoint: "",
@@ -299,23 +304,57 @@ const BookingCar = () => {
         </div>
       ),
     },
+
+    {
+      key: "6",
+      label: "Review",
+      children: (
+        <div className="">
+          <ReviewComponent reviewDb={reviewDb} profile={profile} />
+        </div>
+      ),
+    },
+    {
+      key: "7",
+      label: "Số ghế ",
+      children: (
+        <div className="pl-5">
+          <p className="font-bold text-black text-xl">{checkNumberSeat} ghế</p>
+        </div>
+      ),
+    },
   ];
   const handelFetchApi = async (id) => {
     try {
-      const [dataTripDetail, dataPointStart, dataPointEnd] =
-        await Promise.allSettled([
-          axios.get(
-            "http://103.245.237.93:8082/api/TripDetails/tripId?TripId=" + id
-          ),
-          axios.get(
-            "http://103.245.237.93:8082/api/TripDetails/startPoint/tripId?TripId=" +
-              id
-          ),
-          axios.get(
-            "http://103.245.237.93:8082/api/TripDetails/endPoint/tripId?TripId=" +
-              id
-          ),
-        ]);
+      navigate({
+        search: createSearchParams({
+          idc: id,
+        }).toString(),
+      });
+      const [
+        dataTripDetail,
+        dataPointStart,
+        dataPointEnd,
+        reviewData,
+        numberSeat,
+      ] = await Promise.allSettled([
+        axios.get(
+          "http://103.245.237.93:8082/api/TripDetails/tripId?TripId=" + id
+        ),
+        axios.get(
+          "http://103.245.237.93:8082/api/TripDetails/startPoint/tripId?TripId=" +
+            id
+        ),
+        axios.get(
+          "http://103.245.237.93:8082/api/TripDetails/endPoint/tripId?TripId=" +
+            id
+        ),
+        axios.get("http://103.245.237.93:8082/api/Review"),
+        axios.get(
+          "http://103.245.237.93:8082/api/Vehicle/getNumberSeatAvaiable?vehicelId=" +
+            id
+        ),
+      ]);
       console.log(dataTripDetail.value, "dataTripDetail.value");
       if (dataTripDetail.status == "fulfilled") {
         setTripDetails(dataTripDetail.value.data);
@@ -325,6 +364,13 @@ const BookingCar = () => {
       }
       if (dataPointEnd.status == "fulfilled") {
         setEndPoint(dataPointEnd.value.data);
+      }
+      if (reviewData.status == "fulfilled") {
+        const newDt = reviewData.value.data?.filter((itc) => itc.tripId == id);
+        setReviewDb(newDt);
+      }
+      if (numberSeat.status == "fulfilled") {
+        setCheckNumberSeat(numberSeat.value.data);
       }
     } catch (error) {
       //
@@ -1103,10 +1149,10 @@ const BookingCar = () => {
                                 </div>
                               </>
                             ) : (
-                              <div className="flex">
-                                <div className="w-1/3">
+                              <div className="">
+                                <div className="w-full">
                                   <h2 className="font-bold mb-2">Chú thích</h2>
-                                  <div className="flex items-center mb-2">
+                                  <div className="flex items-center mb-2 w-full">
                                     <div
                                       className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 daMVvn seat-thumbnail"
                                       disabled
@@ -1152,270 +1198,23 @@ const BookingCar = () => {
                                         />
                                       </svg>
                                     </div>
-                                    <span>Ghế không bán</span>
-                                  </div>
-                                  <div className="flex items-center mb-2">
-                                    <div className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 dLgsTe seat-thumbnail">
-                                      <svg
-                                        width={32}
-                                        height={40}
-                                        viewBox="0 0 28 40"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <rect
-                                          x="2.75"
-                                          y="2.75"
-                                          width="22.5"
-                                          height="34.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="green"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <rect
-                                          x="5.75"
-                                          y="27.75"
-                                          width="16.5"
-                                          height="6.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="green"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <path
-                                          className="icon-selected"
-                                          d="M14 8.333A6.67 6.67 0 0 0 7.333 15 6.67 6.67 0 0 0 14 21.667 6.67 6.67 0 0 0 20.667 15 6.669 6.669 0 0 0 14 8.333zm-1.333 10L9.334 15l.94-.94 2.393 2.387 5.06-5.06.94.946-6 6z"
-                                          fill="transparent"
-                                        />
-                                        <path
-                                          className="icon-disabled"
-                                          d="M18.96 11.46l-1.42-1.42L14 13.59l-3.54-3.55-1.42 1.42L12.59 15l-3.55 3.54 1.42 1.42L14 16.41l3.54 3.55 1.42-1.42L15.41 15l3.55-3.54z"
-                                          fill="transparent"
-                                        />
-                                      </svg>
-                                    </div>
-                                    <span>Đang chọn</span>
-                                  </div>
-                                  <div className="flex items-center mb-2">
-                                    <div
-                                      className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 vvWPx seat-thumbnail"
-                                      color="#fba442"
-                                    >
-                                      <svg
-                                        width={32}
-                                        height={40}
-                                        viewBox="0 0 28 40"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <rect
-                                          x="2.75"
-                                          y="2.75"
-                                          width="22.5"
-                                          height="34.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="orange"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <rect
-                                          x="5.75"
-                                          y="27.75"
-                                          width="16.5"
-                                          height="6.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="orange"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <path
-                                          className="icon-selected"
-                                          d="M14 8.333A6.67 6.67 0 0 0 7.333 15 6.67 6.67 0 0 0 14 21.667 6.67 6.67 0 0 0 20.667 15 6.669 6.669 0 0 0 14 8.333zm-1.333 10L9.334 15l.94-.94 2.393 2.387 5.06-5.06.94.946-6 6z"
-                                          fill="transparent"
-                                        />
-                                        <path
-                                          className="icon-disabled"
-                                          d="M18.96 11.46l-1.42-1.42L14 13.59l-3.54-3.55-1.42 1.42L12.59 15l-3.55 3.54 1.42 1.42L14 16.41l3.54 3.55 1.42-1.42L15.41 15l3.55-3.54z"
-                                          fill="transparent"
-                                        />
-                                      </svg>
-                                    </div>
-                                    <span>CABIN ĐƠN</span>
-                                    {/* <span className="ml-2">400,000đ</span> */}
-                                  </div>
-                                  <div className="flex items-center mb-2">
-                                    <div
-                                      className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 lfCjCF seat-thumbnail"
-                                      color="#ae70ff"
-                                    >
-                                      <svg
-                                        width={32}
-                                        height={40}
-                                        viewBox="0 0 28 40"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <rect
-                                          x="2.75"
-                                          y="2.75"
-                                          width="22.5"
-                                          height="34.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="purple"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <rect
-                                          x="5.75"
-                                          y="27.75"
-                                          width="16.5"
-                                          height="6.5"
-                                          rx="2.25"
-                                          fill="#FFF"
-                                          stroke="purple"
-                                          strokeWidth="1.5"
-                                          strokeLinejoin="round"
-                                        />
-                                        <path
-                                          className="icon-selected"
-                                          d="M14 8.333A6.67 6.67 0 0 0 7.333 15 6.67 6.67 0 0 0 14 21.667 6.67 6.67 0 0 0 20.667 15 6.669 6.669 0 0 0 14 8.333zm-1.333 10L9.334 15l.94-.94 2.393 2.387 5.06-5.06.94.946-6 6z"
-                                          fill="transparent"
-                                        />
-                                        <path
-                                          className="icon-disabled"
-                                          d="M18.96 11.46l-1.42-1.42L14 13.59l-3.54-3.55-1.42 1.42L12.59 15l-3.55 3.54 1.42 1.42L14 16.41l3.54 3.55 1.42-1.42L15.41 15l3.55-3.54z"
-                                          fill="transparent"
-                                        />
-                                      </svg>
-                                    </div>
-                                    <span>CABIN ĐÔI</span>
-                                    {/* <span className="ml-2">750,000đ</span> */}
-                                  </div>
-                                </div>
-                                <div className="w-2/3 flex justify-between">
-                                  <div>
-                                    <h2 className="font-bold mb-2 text-center">
-                                      Tầng dưới
-                                    </h2>
-                                    <div className="flex flex-col items-center">
-                                      <i className="fas fa-bus text-2xl mb-2"></i>
-                                      <div className="flex flex-wrap justify-center">
-                                        {Array(1, 2, 3).map((a, index) => {
-                                          return (
-                                            <div
-                                              key={index}
-                                              className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 daMVvn seat-thumbnail"
-                                              disabled
-                                            >
-                                              <svg
-                                                width={32}
-                                                height={40}
-                                                viewBox="0 0 28 40"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                              >
-                                                <rect
-                                                  x="2.75"
-                                                  y="2.75"
-                                                  width="22.5"
-                                                  height="34.5"
-                                                  rx="2.25"
-                                                  fill="#FFF"
-                                                  stroke="#B8B8B8"
-                                                  strokeWidth="1.5"
-                                                  strokeLinejoin="round"
-                                                />
-                                                <rect
-                                                  x="5.75"
-                                                  y="27.75"
-                                                  width="16.5"
-                                                  height="6.5"
-                                                  rx="2.25"
-                                                  fill="#FFF"
-                                                  stroke="#B8B8B8"
-                                                  strokeWidth="1.5"
-                                                  strokeLinejoin="round"
-                                                />
-                                                <path
-                                                  className="icon-selected"
-                                                  d="M14 8.333A6.67 6.67 0 0 0 7.333 15 6.67 6.67 0 0 0 14 21.667 6.67 6.67 0 0 0 20.667 15 6.669 6.669 0 0 0 14 8.333zm-1.333 10L9.334 15l.94-.94 2.393 2.387 5.06-5.06.94.946-6 6z"
-                                                  fill="transparent"
-                                                />
-                                                <path
-                                                  className="icon-disabled"
-                                                  d="M18.96 11.46l-1.42-1.42L14 13.59l-3.54-3.55-1.42 1.42L12.59 15l-3.55 3.54 1.42 1.42L14 16.41l3.54 3.55 1.42-1.42L15.41 15l3.55-3.54z"
-                                                  fill="transparent"
-                                                />
-                                              </svg>
-                                            </div>
+                                    <div className="flex items-center w-full gap-3">
+                                      <input
+                                        onChange={(e) => {
+                                          localStorage.setItem(
+                                            "quantity",
+                                            e.target.value
                                           );
-                                        })}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <h2 className="font-bold mb-2 text-center">
-                                      Tầng trên
-                                    </h2>
-                                    <div className="flex flex-col items-center">
-                                      <div className="flex flex-wrap justify-center">
-                                        {Array(1, 2, 3).map((a, index) => {
-                                          return (
-                                            <div
-                                              key={index}
-                                              className="SeatThumbnail__SeatContainer-sc-1ooosi9-0 daMVvn seat-thumbnail"
-                                              disabled
-                                            >
-                                              <svg
-                                                width={32}
-                                                height={40}
-                                                viewBox="0 0 28 40"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                              >
-                                                <rect
-                                                  x="2.75"
-                                                  y="2.75"
-                                                  width="22.5"
-                                                  height="34.5"
-                                                  rx="2.25"
-                                                  fill="#FFF"
-                                                  stroke="purple"
-                                                  strokeWidth="1.5"
-                                                  strokeLinejoin="round"
-                                                />
-                                                <rect
-                                                  x="5.75"
-                                                  y="27.75"
-                                                  width="16.5"
-                                                  height="6.5"
-                                                  rx="2.25"
-                                                  fill="#FFF"
-                                                  stroke="purple"
-                                                  strokeWidth="1.5"
-                                                  strokeLinejoin="round"
-                                                />
-                                                <path
-                                                  className="icon-selected"
-                                                  d="M14 8.333A6.67 6.67 0 0 0 7.333 15 6.67 6.67 0 0 0 14 21.667 6.67 6.67 0 0 0 20.667 15 6.669 6.669 0 0 0 14 8.333zm-1.333 10L9.334 15l.94-.94 2.393 2.387 5.06-5.06.94.946-6 6z"
-                                                  fill="transparent"
-                                                />
-                                                <path
-                                                  className="icon-disabled"
-                                                  d="M18.96 11.46l-1.42-1.42L14 13.59l-3.54-3.55-1.42 1.42L12.59 15l-3.55 3.54 1.42 1.42L14 16.41l3.54 3.55 1.42-1.42L15.41 15l3.55-3.54z"
-                                                  fill="transparent"
-                                                />
-                                              </svg>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
+                                        }}
+                                        type="number"
+                                        className="form-control w-1/3"
+                                        placeholder="Username"
+                                        aria-label="Username"
+                                        aria-describedby="basic-addon1"
+                                      />
+                                      <label className="w-2/3">
+                                        Số lượng ghế
+                                      </label>
                                     </div>
                                   </div>
                                 </div>
