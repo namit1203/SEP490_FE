@@ -14,9 +14,9 @@ const RequestDetail = () => {
   const [error, setError] = useState(false);
   const [typeId, setTypeId] = useState(null); // Lưu typeId để hiển thị giao diện
   const [drivers, setDrivers] = useState([]); // Danh sách drivers (type 4)
-  const [vehicles, setVehicles] = useState([]); // Danh sách vehicles (type 2 và 7)
+  const [vehicles, setVehicles] = useState([]); // Danh sách vehicles (type 2, 5, 7)
   const [selectedDriver, setSelectedDriver] = useState(null); // Driver được chọn (type 4)
-  const [selectedVehicle, setSelectedVehicle] = useState(null); // Vehicle được chọn (type 2 và 7)
+  const [selectedVehicle, setSelectedVehicle] = useState(null); // Vehicle được chọn (type 2, 5, 7)
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -62,8 +62,8 @@ const RequestDetail = () => {
 
         const data = requestDetailResponse.data;
 
-        // Nếu typeId = 2 hoặc 7, lấy danh sách vehicles
-        if (request.typeId === 2 || request.typeId === 7) {
+        // Nếu typeId = 2, 5, hoặc 7, lấy danh sách vehicles
+        if (request.typeId === 2 || request.typeId === 5 || request.typeId === 7) {
           const vehiclesResponse = await axios.get(
             "https://boring-wiles.202-92-7-204.plesk.page/api/HistoryRentVehicle/ListVehicleRent",
             {
@@ -111,7 +111,7 @@ const RequestDetail = () => {
     fetchDetails();
   }, [id, form]);
 
-  const handleActionType2And7 = async (choose) => {
+  const handleActionType2And7And5 = async (choose) => {
     const price = form.getFieldValue("price");
     if (!selectedVehicle) {
       message.error("Please select a vehicle.");
@@ -177,29 +177,6 @@ const RequestDetail = () => {
     }
   };
 
-  const handleSavePriceType5And6 = async () => {
-    const price = form.getFieldValue("price");
-    try {
-      await axios.post(
-        "https://boring-wiles.202-92-7-204.plesk.page/api/Request/UpdatePrice",
-        {
-          requestId: id,
-          price,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + checkLoginToken(),
-          },
-        }
-      );
-
-      message.success("Price has been updated successfully.");
-    } catch (error) {
-      console.error("Error updating price:", error);
-      message.error("Failed to update price.");
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -248,14 +225,14 @@ const RequestDetail = () => {
         <Form.Item label="End Time" name="endTime">
           <DatePicker showTime disabled />
         </Form.Item>
-        {(typeId === 2 || typeId === 7) && (
+        {(typeId === 2 || typeId === 5 || typeId === 7) && (
           <Form.Item label="Vehicle">
             <Select
               onChange={(value) => setSelectedVehicle(value)}
               placeholder="Select a vehicle"
             >
               {vehicles.map((vehicle) => (
-                <Option key={vehicle.licensePlate} value={vehicle.licensePlate}>
+                <Option key={vehicle.id} value={vehicle.id}>
                   {vehicle.name}
                 </Option>
               ))}
@@ -278,16 +255,16 @@ const RequestDetail = () => {
         )}
       </Form>
       <div className="mt-5 flex space-x-4">
-        {(typeId === 2 || typeId === 7) && (
+        {(typeId === 2 || typeId === 5 || typeId === 7) && (
           <>
             <Button
               type="primary"
-              onClick={() => handleActionType2And7(true)}
+              onClick={() => handleActionType2And7And5(true)}
               disabled={!selectedVehicle}
             >
-              Accept
+              Allow
             </Button>
-            <Button danger onClick={() => handleActionType2And7(false)}>
+            <Button danger onClick={() => handleActionType2And7And5(false)}>
               Deny
             </Button>
           </>
@@ -305,11 +282,6 @@ const RequestDetail = () => {
               Deny
             </Button>
           </>
-        )}
-        {(typeId === 5 || typeId === 6) && (
-          <Button type="primary" onClick={handleSavePriceType5And6}>
-            Save Price
-          </Button>
         )}
       </div>
     </div>
