@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // Import jwt-decode để giải mã token
 import { useNavigate } from "react-router-dom";
 
-const DriverLogin = () => {
-  const [loading, setLoading] = useState(false); // Trạng thái nút login
-  const navigate = useNavigate(); // Điều hướng sau khi login
+const DriverLogin: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = async (values) => {
+  const handelLogin = async (values: { username: string; password: string }) => {
     setLoading(true);
+
     try {
-      const response = await axios.post(
+      // Gửi request login và nhận token trả về
+      const { data: token } = await axios.post(
         "https://boring-wiles.202-92-7-204.plesk.page/loginDriver",
         {
           username: values.username,
@@ -18,19 +21,34 @@ const DriverLogin = () => {
         }
       );
 
-      const { token } = response.data;
+      // Kiểm tra token
+      if (!token || typeof token !== "string") {
+        message.error("Invalid token received from API.");
+        return;
+      }
 
-      if (token) {
-        // Lưu token vào localStorage hoặc sessionStorage
-        localStorage.setItem("driverToken", token);
+      try {
+        // Decode token để lấy thông tin role
+        const decodedToken = jwtDecode<{ role: string }>(token);
+        console.log("Decoded Token:", decodedToken);
 
-        message.success("Login successful!");
-        navigate("/driver-dashboard"); // Điều hướng đến dashboard của driver
-      } else {
-        message.error("Login failed! Please try again.");
+        if (decodedToken.role === "Driver") {
+          // Nếu role là Driver, tiến hành lưu thông tin và cho phép đăng nhập
+          message.success("Login successful");
+          localStorage.setItem("driverToken", token); // Lưu token vào localStorage
+
+          navigate("/driver-dashboard"); // Điều hướng đến dashboard driver
+        } else {
+          // Nếu không phải Driver
+          message.error("Không đủ thẩm quyền để truy cập.");
+          localStorage.removeItem("driverToken"); // Xóa token không hợp lệ (nếu có)
+        }
+      } catch (decodeError) {
+        console.error("Decode Error:", decodeError);
+        message.error("Invalid token format.");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login Error:", error);
       message.error("Invalid username or password.");
     } finally {
       setLoading(false);
@@ -61,7 +79,7 @@ const DriverLogin = () => {
         </h2>
         <Form
           layout="vertical"
-          onFinish={handleLogin}
+          onFinish={handelLogin}
           autoComplete="off"
         >
           <Form.Item

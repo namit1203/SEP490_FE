@@ -26,6 +26,8 @@ import Analytics from "./page/admin/analytics/Analytics";
 import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver";
 import TypeOfDriver from "./page/admin/TypeOfDriver/TypeOfDriver";
 import ListVehicleRent from "./page/admin/ListVehicleRent/ListVehicleRent";
+import DriverLogin from "./page/driver/Login"; // Import trang Driver Login
+
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
@@ -36,7 +38,7 @@ export default function useRouteElements() {
       path: "*",
       element: (
         <div className="text-center font-bold text-black text-4xl">
-          Page not found !
+          Page not found!
         </div>
       ),
     },
@@ -90,6 +92,10 @@ export default function useRouteElements() {
         { path: "typeOfDriver", element: <TypeOfDriver /> },
         { path: "listVehicleRent", element: <ListVehicleRent /> },
       ],
+    },
+    {
+      path: "/driver/login", // Cập nhật path cho driver login
+      element: <DriverLogin />,
     },
   ]);
   return routeElements;
