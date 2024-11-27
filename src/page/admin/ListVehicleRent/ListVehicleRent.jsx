@@ -1,14 +1,12 @@
 import {
   Breadcrumb,
   Button,
-  Checkbox,
-  DatePicker,
+  Popconfirm,
+  Table,
   Drawer,
   Form,
   Input,
   message,
-  Popconfirm,
-  Table,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -18,51 +16,66 @@ import { checkLoginToken } from "../../../utils";
 const ListVehicleRent = () => {
   const [open, setOpen] = useState(false);
   const [idUser, setIdUser] = useState(null);
-  const [checkAdd, setCheckAdd] = useState(false);
-
   const [dataUser, setDataUser] = useState([]);
-  const [accountData, setAccountData] = useState(null);
   const [form] = Form.useForm();
 
   const handelFetchData = async () => {
-    const { data } = await axios.get(
-      "https://boring-wiles.202-92-7-204.plesk.page/api/HistoryRentVehicle/ListVehicleRent",
-      {
-        headers: {
-          Authorization: "Bearer " + checkLoginToken(),
-        },
-      }
-    );
-    setDataUser(data);
+    try {
+      const { data } = await axios.get(
+        "https://boring-wiles.202-92-7-204.plesk.page/api/HistoryRentVehicle/ListVehicleRent",
+        {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
+      );
+      setDataUser(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
   useEffect(() => {
     handelFetchData();
   }, []);
+
   const showDrawer = () => {
     setOpen(true);
   };
+
   const onClose = () => {
     setOpen(false);
     setIdUser(null);
+    form.resetFields();
   };
 
-  const confirm = async (e) => {
-    await axios.delete("https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/" + e, {
-      headers: {
-        Authorization: "Bearer " + checkLoginToken(),
-      },
-    });
-    handelFetchData();
-    message.success("Click on Yes");
+  const confirm = async (id) => {
+    try {
+      await axios.delete(
+        `https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/${id}`,
+        {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
+      );
+      message.success("Vehicle removed successfully");
+      handelFetchData();
+    } catch (error) {
+      message.error("Error deleting vehicle");
+      console.error("Error deleting vehicle:", error);
+    }
   };
-  const cancel = (e) => {
-    console.log(e);
-    message.error("Click on No");
+
+  const cancel = () => {
+    message.error("Action cancelled");
   };
-  const dataSource = dataUser.filter((data) => data.status == true);
+
+  const dataSource = dataUser.filter((data) => data.status === true);
+
   const columns = [
     {
-      title: " Số ghế",
+      title: "Số ghế",
       dataIndex: "numberSeat",
       key: "numberSeat",
     },
@@ -76,98 +89,100 @@ const ListVehicleRent = () => {
       dataIndex: "description",
       key: "description",
     },
-
     {
       title: "Action",
-      render: ({ id }) => {
-        return (
-          <div className="space-x-5">
-            <Popconfirm
-              title="Delete the task"
-              description="Are you sure to delete this task?"
-              onConfirm={() => confirm(id)}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                htmlType=""
-                className="bg-red-500 text-white font-semibold"
-              >
-                Remove
-              </Button>
-            </Popconfirm>
-
-            <Button
-              htmlType=""
-              onClick={() => {
-                setIdUser(id);
-                showDrawer();
-              }}
-              className="font-semibold"
-            >
-              chi tiết
+      render: ({ id }) => (
+        <div className="space-x-5">
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            onConfirm={() => confirm(id)}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button className="bg-red-500 text-white font-semibold">
+              Remove
             </Button>
-          </div>
-        );
-      },
+          </Popconfirm>
+
+          <Button
+            onClick={() => {
+              setIdUser(id);
+              showDrawer();
+            }}
+            className="font-semibold"
+          >
+            Chi tiết
+          </Button>
+        </div>
+      ),
     },
   ];
-  const onFinish = async (values) => {
-    await axios.put("https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/" + idUser, {
-      ...values,
-      dob: "2024-10-31T03:44:08.522Z",
-      statusWork: "string",
-      typeOfDriver: 0,
-      status: true,
-    });
-    message.success("success");
-    onClose();
-    handelFetchData();
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/" + idUser
-        );
-        const data = await response.json();
-        form.setFieldsValue({
-          ...data,
-          dob: data.dob ? dayjs(data.dob) : null,
-          createdAt: data.createdAt ? dayjs(data.createdAt) : null,
-          updateAt: data.updateAt ? dayjs(data.updateAt) : null,
-        });
-        setAccountData(data);
-        form.setFieldsValue(data); // Đặt dữ liệu vào form
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
 
-    if (open) {
-      fetchData();
+  const fetchVehicleData = async (id) => {
+    try {
+      const response = await axios.get(
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Vehicle/getInforVehicle/${id}`
+      );
+      const data = response.data;
+      form.setFieldsValue({
+        ...data,
+        dob: data.dob ? dayjs(data.dob) : null,
+        createdAt: data.createdAt ? dayjs(data.createdAt) : null,
+        updateAt: data.updateAt ? dayjs(data.updateAt) : null,
+      });
+    } catch (error) {
+      console.error("Error fetching vehicle data:", error);
     }
-  }, [open, form, idUser]);
+  };
+
+  useEffect(() => {
+    if (open && idUser) {
+      fetchVehicleData(idUser);
+    }
+  }, [open, idUser]);
+
+  const onFinish = async (values) => {
+    try {
+      await axios.put(
+        `https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/${idUser}`,
+        {
+          ...values,
+          dob: "2024-10-31T03:44:08.522Z",
+          statusWork: "string",
+          typeOfDriver: 0,
+          status: true,
+        }
+      );
+      message.success("Vehicle details updated successfully");
+      onClose();
+      handelFetchData();
+    } catch (error) {
+      message.error("Error updating vehicle details");
+      console.error("Error updating vehicle details:", error);
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.error("Failed:", errorInfo);
+  };
+
   return (
     <div>
       <Breadcrumb routes={[{ breadcrumbName: "Dashboard/listVehicleRent" }]} />
       <div className="flex justify-end">
         <Button
-          htmlType=""
           onClick={showDrawer}
           className="bg-green-500 text-white font-medium"
         >
           Thêm Mới
         </Button>
       </div>
-      <Drawer title="Basic Drawer" onClose={onClose} open={open}>
+      <Drawer title="Vehicle Details" onClose={onClose} open={open}>
         <Form
           form={form}
-          name="accountDetails"
+          name="vehicleDetails"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
@@ -175,101 +190,32 @@ const ListVehicleRent = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          {checkAdd ? (
-            <>
-              <Form.Item
-                label="name driver"
-                name="userName"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="name driver"
-                name="userName"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : (
-            <>
-              <Form.Item label="ID" name="id">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item
-                label="name driver"
-                name="userName"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="name"
-                name="name"
-                rules={[
-                  { required: true, message: "Please input your email!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Phone Number"
-                name="numberPhone"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your phone number!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item label="Avatar" name="avatar">
-                <Input />
-              </Form.Item>
-              {/* <Form.Item label="Address" name="address">
-              <Input />
-            </Form.Item>
-
-            <Form.Item label="Status" name="status" valuePropName="checked">
-              <Checkbox />
-            </Form.Item>
-
-            <Form.Item label="Date of Birth" name="dob">
-              <DatePicker format="YYYY-MM-DD" />
-            </Form.Item>
-
-            <Form.Item label="Created At" name="createdAt">
-              <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
-            </Form.Item>
-
-            <Form.Item label="Created By" name="createdBy">
-              <Input disabled />
-            </Form.Item>
-
-            <Form.Item label="Updated At" name="updateAt">
-              <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />
-            </Form.Item>
-
-            <Form.Item label="Updated By" name="updateBy">
-              <Input disabled />
-            </Form.Item> */}
-            </>
-          )}
-
+          <Form.Item label="Vehicle ID" name="id">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item
+            label="Number Plate"
+            name="licensePlate"
+            rules={[
+              { required: true, message: "Please input the license plate!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[
+              { required: true, message: "Please input a description!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Seats" name="numberSeat">
+            <Input />
+          </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
+     
           </Form.Item>
         </Form>
       </Drawer>
