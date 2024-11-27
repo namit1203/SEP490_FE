@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { Form, Input, Button, InputNumber, message } from "antd";
 
-const CreateTicket = () => {
+const DriverCreateTicket = () => {
   const [form] = Form.useForm();
 
   const handleSubmit = async (values) => {
-    // Hiển thị dữ liệu nhập vào để debug
-    console.log("Ticket Data:", values);
+    console.log("Ticket Data:", values); // Log dữ liệu nhập để kiểm tra
 
-    // TODO: Thay thế đoạn này bằng API gọi để tạo ticket
+    // TODO: Gọi API thực tế sau khi có backend
     try {
-      // Ví dụ gọi API (thay URL bằng API thực tế)
       // const response = await axios.post(
-      //   "https://api.example.com/create-ticket",
+      //   "https://your-api-url.com/create-ticket",
       //   values
       // );
       message.success("Ticket created successfully!");

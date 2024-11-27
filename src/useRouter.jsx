@@ -29,6 +29,8 @@ import ListVehicleRent from "./page/admin/ListVehicleRent/ListVehicleRent";
 import DriverLogin from "./page/driver/Login"; // Import trang Driver Login
 import History from "./page/driver/History";
 import DriverCreateTicket from "./page/driver/DriverCreateTicket";
+import UpdateTicket from "./page/driver/UpdateTicket";
+import DriverRequests from "./page/driver/DriverRequest"
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -109,8 +111,16 @@ export default function useRouteElements() {
 
         },
         {
-          path: "ticket", // URL: /driver/create-ticket
+          path: "update-ticket/:ticketId", // URL: /driver/update-ticket/:ticketId
+          element: <UpdateTicket />,
+        },
+        {
+          path: "create-ticket", // URL: /driver/create-ticket
           element: <DriverCreateTicket />,
+        },
+        {
+          path: "requests", // URL: /driver/requests
+          element: <DriverRequests />,
         },
         // Thêm các route con khác nếu cần
       ],
