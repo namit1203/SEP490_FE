@@ -99,7 +99,7 @@ export default function useRouteElements() {
     },
     {
       path: "/driver",
-      element: <DefaultLayout />, // Layout chung cho driver
+     
       children: [
         {
           path: "history", // URL: /driver/history
