@@ -12,7 +12,6 @@ const Convenient = () => {
   const [dataDetail, setDataDetail] = useState({
     startPoint: "Ha Noi",
     endPoint: "Bac Giang",
-
   });
   const [price, setPrice] = useState(null); // Giá gốc
   const [finalPrice, setFinalPrice] = useState(null); // Giá sau khuyến mãi
@@ -55,7 +54,7 @@ const Convenient = () => {
   const handelBookTrip = async (tripType) => {
     try {
       const { data } = await axios.get(
-        `http://103.245.237.93:8082/api/Trip/searchTripForConvenient/${dataDetail.startPoint}/${dataDetail.endPoint}/${tripType}`,
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Trip/searchTripForConvenient/${dataDetail.startPoint}/${dataDetail.endPoint}/${tripType}`,
         {
           headers: {
             Authorization: `Bearer ${checkLoginToken()}`,
@@ -75,23 +74,26 @@ const Convenient = () => {
   };
 
   const handleApplyPromotion = () => {
-  
+    if (selectedPromotion) {
+      const selectedPromo = promotions.find(
+        (promo) => promo.codePromotion === selectedPromotion
+      );
 
-    const selectedPromo = promotions.find(
-      (promo) => promo.codePromotion === selectedPromotion
-    );
+      if (!selectedPromo) {
+        message.warning("Khuyến mãi không hợp lệ.");
+        return;
+      }
 
-    if (!selectedPromo) {
-      message.warning("Khuyến mãi không hợp lệ.");
-      return;
+      // Tính giá sau khuyến mãi
+      const discount = selectedPromo.discount || 0;
+      const discountedPrice = price - (price * discount) / 100;
+      setFinalPrice(discountedPrice);
+
+      message.success(`Khuyến mãi đã áp dụng: ${selectedPromo.description}`);
+    } else {
+      setFinalPrice(price); // Nếu không chọn khuyến mãi, giữ nguyên giá gốc
+      message.info("Không áp dụng khuyến mãi.");
     }
-
-    // Tính giá sau khuyến mãi
-    const discount = selectedPromo.discount || 0;
-    const discountedPrice = price - (price * discount) / 100;
-    setFinalPrice(discountedPrice);
-
-    message.success(`Khuyến mãi đã áp dụng: ${selectedPromo.description}`);
   };
 
   const handelResult = async () => {
@@ -207,7 +209,13 @@ const Convenient = () => {
                 <p>Giá sau khuyến mãi: {finalPrice ? `${finalPrice}đ` : "Đang áp dụng..."}</p>
               </div>
               <button
-                onClick={handelResult}
+                onClick={() => {
+                  if (!price) {
+                    message.warning("Vui lòng kiểm tra giá trước khi đặt xe.");
+                    return;
+                  }
+                  handelResult();
+                }}
                 className="bg-green-500 text-white py-2 px-4 rounded-full w-full"
               >
                 ĐẶT XE NGAY
