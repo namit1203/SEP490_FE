@@ -28,7 +28,7 @@ const RenterCar = () => {
       };
 
       await axios.post(
-        "https://boring-wiles.202-92-7-204.plesk.page/api/CreateTicketForRentFullCar",
+        "https://boring-wiles.202-92-7-204.plesk.page/CreateTicketForRentFullCar",
         dataPayload,
         {
           headers: {
