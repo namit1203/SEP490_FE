@@ -1,52 +1,91 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, InputNumber, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, message } from "antd";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
 const UpdateTicket = () => {
-  const [form] = Form.useForm();
-  const { ticketId } = useParams(); // Lấy ID của ticket từ URL
-  const [loading, setLoading] = useState(false);
-  const [initialValues, setInitialValues] = useState(null); // Lưu dữ liệu ban đầu của ticket
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch dữ liệu ticket
-  useEffect(() => {
-    const fetchTicket = async () => {
-      try {
-        // TODO: Thay URL bằng API thực tế để lấy chi tiết ticket
-        const { data } = await axios.get(
-          `https://example.com/api/tickets/${ticketId}`
-        );
-        setInitialValues(data);
-        form.setFieldsValue(data); // Điền dữ liệu ban đầu vào form
-      } catch (error) {
-        console.error("Error fetching ticket:", error);
-        message.error("Failed to fetch ticket details.");
-      }
-    };
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRyaXZlcjFAZ21haWwuY29tIiwiSUQiOiIxIiwicm9sZSI6IkRyaXZlciIsIm5iZiI6MTczMjY5NTk0NywiZXhwIjoxNzMyNjk3NzQ3LCJpYXQiOjE3MzI2OTU5NDcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NzEyNCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMyJ9.N0xdwp4G5TdJjyfHKvsxy4NrYd_A3qaSJk8cfoUWFJA";
 
-    fetchTicket();
-  }, [ticketId, form]);
-
-  // Xử lý khi submit form
-  const handleSubmit = async (values) => {
-    setLoading(true);
+  // Fetch danh sách vé chưa thanh toán
+  const fetchUnpaidTickets = async () => {
     try {
-      // TODO: Thay URL bằng API thực tế để cập nhật ticket
-      await axios.put(`https://example.com/api/tickets/${ticketId}`, values);
-      message.success("Ticket updated successfully!");
+      const response = await axios.get(
+        "https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/tickeNotPaid/2",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setData(response.data);
     } catch (error) {
-      console.error("Error updating ticket:", error);
-      message.error("Failed to update ticket.");
+      console.error("Error fetching unpaid tickets:", error);
+      message.error("Failed to fetch unpaid tickets.");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchUnpaidTickets();
+  }, []);
+
+  // Xác nhận đã thu tiền
+  const confirmPayment = async (ticketId) => {
+    try {
+      await axios.post(
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/confirm-payment/${ticketId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      message.success(`Payment for Ticket ID: ${ticketId} confirmed.`);
+      fetchUnpaidTickets(); // Refresh danh sách sau khi xác nhận
+    } catch (error) {
+      console.error(`Error confirming payment for Ticket ID: ${ticketId}`, error);
+      message.error("Failed to confirm payment.");
+    }
+  };
+
+  // Cột của bảng
+  const columns = [
+    {
+      title: "Number License Plate",
+      dataIndex: "licensePlate",
+      key: "licensePlate",
+    },
+    {
+      title: "Full Name",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => `${price.toLocaleString("vi-VN")} VND`, // Định dạng tiền VND
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button
+          type="primary"
+          onClick={() => confirmPayment(record.ticketId)}
+          disabled={loading}
+        >
+          Confirm Payment
+        </Button>
+      ),
+    },
+  ];
+  
+
   return (
     <div
       style={{
-        maxWidth: "600px",
+        maxWidth: "800px",
         margin: "auto",
         padding: "20px",
         backgroundColor: "#fff",
@@ -54,66 +93,16 @@ const UpdateTicket = () => {
         boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Update Ticket</h2>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
-        initialValues={initialValues} // Dữ liệu ban đầu
-      >
-        <Form.Item
-          label="Pickup Point"
-          name="pickupPoint"
-          rules={[
-            { required: true, message: "Please enter the pickup point!" },
-          ]}
-        >
-          <Input placeholder="Enter pickup point" />
-        </Form.Item>
-
-        <Form.Item
-          label="Dropoff Point"
-          name="dropoffPoint"
-          rules={[
-            { required: true, message: "Please enter the dropoff point!" },
-          ]}
-        >
-          <Input placeholder="Enter dropoff point" />
-        </Form.Item>
-
-        <Form.Item
-          label="Price"
-          name="price"
-          rules={[
-            { required: true, message: "Please enter the price!" },
-            { type: "number", min: 0, message: "Price must be positive!" },
-          ]}
-        >
-          <InputNumber
-            placeholder="Enter price"
-            style={{ width: "100%" }}
-            formatter={(value) => `$ ${value}`}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Customer Phone"
-          name="customerPhone"
-          rules={[
-            { required: true, message: "Please enter the customer phone!" },
-            { pattern: /^[0-9]{10}$/, message: "Enter a valid 10-digit phone number!" },
-          ]}
-        >
-          <Input placeholder="Enter customer phone number" />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
-            Update Ticket
-          </Button>
-        </Form.Item>
-      </Form>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Update Ticket - Confirm Payment
+      </h2>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={loading}
+        rowKey="ticketId"
+        pagination={{ pageSize: 5 }}
+      />
     </div>
   );
 };

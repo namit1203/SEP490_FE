@@ -111,7 +111,7 @@ export default function useRouteElements() {
 
         },
         {
-          path: "update-ticket/:ticketId", // URL: /driver/update-ticket/:ticketId
+          path: "update-ticket", // URL: /driver/update-ticket/:ticketId
           element: <UpdateTicket />,
         },
         {
