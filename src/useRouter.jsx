@@ -27,6 +27,8 @@ import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver"
 import TypeOfDriver from "./page/admin/TypeOfDriver/TypeOfDriver";
 import ListVehicleRent from "./page/admin/ListVehicleRent/ListVehicleRent";
 import DriverLogin from "./page/driver/Login"; // Import trang Driver Login
+import History from "./page/driver/History";
+import DriverCreateTicket from "./page/driver/DriverCreateTicket";
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -94,8 +96,24 @@ export default function useRouteElements() {
       ],
     },
     {
-      path: "/driver/login", // Cập nhật path cho driver login
-      element: <DriverLogin />,
+      path: "/driver",
+      element: <DefaultLayout />, // Layout chung cho driver
+      children: [
+        {
+          path: "history", // URL: /driver/history
+          element: <History />,
+        },
+        {
+          path: "login", // URL: /driver/profile
+          element: <DriverLogin />,
+
+        },
+        {
+          path: "ticket", // URL: /driver/create-ticket
+          element: <DriverCreateTicket />,
+        },
+        // Thêm các route con khác nếu cần
+      ],
     },
   ]);
   return routeElements;
