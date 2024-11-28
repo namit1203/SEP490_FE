@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Form, Input, DatePicker, Select, Button, Spin, message } from "antd";
+import { Button, DatePicker, Form, Input, Select, Spin, message } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { checkLoginToken } from "../../../utils";
 
 const { Option } = Select;
@@ -113,20 +113,20 @@ const RequestDetail = () => {
 
   const handleActionType2 = async (choose) => {
     const price = form.getFieldValue("price"); // Get price from form
-  
+
     if (!selectedVehicle) {
       message.error("Please select a vehicle.");
       return;
     }
-  
+
     if (!price) {
       message.error("Please enter a price.");
       return;
     }
-  
+
     try {
       const url = `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/createTicketForRentCar?requestId=${id}&choose=${choose}&vehicleId=${selectedVehicle}&price=${price}`;
-  
+
       await axios.post(
         url,
         {},
@@ -136,7 +136,7 @@ const RequestDetail = () => {
           },
         }
       );
-  
+
       message.success(
         choose
           ? "Vehicle request has been approved successfully."
@@ -147,7 +147,6 @@ const RequestDetail = () => {
       message.error("Failed to process the action.");
     }
   };
-  
 
   const handleActionType7 = async (choose) => {
     if (!selectedVehicle) {
