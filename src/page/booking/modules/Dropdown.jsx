@@ -1,7 +1,7 @@
 // Dropdown.js
 import React from "react";
 
-const Dropdown = ({ options, filteredOptions, isOpen, handleOptionClick }) => {
+const Dropdown = ({ filteredOptions, isOpen, handleOptionClick }) => {
   if (!isOpen) return null;
 
   return (
@@ -17,7 +17,9 @@ const Dropdown = ({ options, filteredOptions, isOpen, handleOptionClick }) => {
           </li>
         ))
       ) : (
-        <div className="px-4 py-2 text-gray-500 text-xs">Không có tùy chọn phù hợp</div>
+        <div className="px-4 py-2 text-gray-500 text-xs">
+          Không có tùy chọn phù hợp
+        </div>
       )}
     </ul>
   );

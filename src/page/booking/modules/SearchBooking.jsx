@@ -67,7 +67,6 @@ export default function SearchBooking() {
                   />
 
                   <DropdownSearch
-                    options={options}
                     filteredOptions={filteredOptions}
                     isOpen={isOpen}
                     handleOptionClick={handleOptionClick}
