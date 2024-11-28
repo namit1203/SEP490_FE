@@ -1,15 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import DropdownSearch from "./Dropdown";
+import { options } from "../../../mock/location";
 
 export default function SearchBooking() {
-  const options = [
-    { id: 1, value: "Hà Nội" },
-    { id: 2, value: "Hải Phòng" },
-    { id: 3, value: "Đà Nẵng" },
-    { id: 4, value: "TP.HCM" },
-    { id: 5, value: "Bắc Giang" },
-  ];
-
   const [fromInputValue, setFromInputValue] = useState(options[0].value);
   const [toInputValue, setToInputValue] = useState(options[1].value);
 
@@ -67,7 +60,7 @@ export default function SearchBooking() {
         <div className="border rounded-lg border-solid border-[rgb(224,224,224)]">
           <div className="flex items-center space-x-4">
             {/* Start - Nơi xuất phát */}
-            <div className="flex flex-row gap-2 px-4 py-0 h-[54px]">
+            <div className="flex flex-row gap-2 px-4 py-0 h-[54px] border-r-[rgb(224,224,224)] border-r border-solid">
               <div className="flex flex-col justify-center items-center">
                 <img
                   src="https://229a2c9fe669f7b.cmccloud.com.vn/svgIcon/pickup_vex_blue_24dp.svg"
