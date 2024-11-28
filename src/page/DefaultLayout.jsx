@@ -261,7 +261,7 @@ const DefaultLayout = () => {
               textAlign: "center",
             }}
           >
-        
+
           </Footer>
         </Layout>
       </Layout>

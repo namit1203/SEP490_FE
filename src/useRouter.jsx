@@ -1,36 +1,36 @@
 import { useRoutes } from "react-router-dom";
-import Home from "./page/Home";
-import Profile from "./page/profile/Profile";
 import BookingCar from "./page/BookingCar";
-import Checkout from "./page/Checkout";
-import Info from "./page/profile/Info";
-import ChangePassword from "./page/profile/ChangePassword";
-import DefaultLayout from "./page/DefaultLayout";
-import UserList from "./page/admin/managerUser/UserList";
 import Bookingconfirmation from "./page/Bookingconfirmation";
+import Checkout from "./page/Checkout";
+import Convenient from "./page/Convenient";
+import DefaultLayout from "./page/DefaultLayout";
+import DetaillTicket from "./page/DetaillTicket";
+import Home from "./page/Home";
 import PaymentMethod from "./page/PaymentMethod";
-import RoleList from "./page/admin/managerRole/RoleList";
+import RenterCar from "./page/RenterCar";
+import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver";
+import ListVehicleRent from "./page/admin/ListVehicleRent/ListVehicleRent";
+import LossCostType from "./page/admin/LossCostType/LossCostType";
+import TypeOfDriver from "./page/admin/TypeOfDriver/TypeOfDriver";
+import Analytics from "./page/admin/analytics/Analytics";
+import FixedCosts from "./page/admin/fixedCosts/FixedCosts";
 import DriverList from "./page/admin/managerDriver/ListDriver";
 import PromotionList from "./page/admin/managerPromotion/PromotionList";
 import ListRequest from "./page/admin/managerRequest/ListRequest";
 import RequestDetail from "./page/admin/managerRequest/RequestDetail";
-import VehicleList from "./page/admin/managerVehicle/ListVehicle";
-import LossCostType from "./page/admin/LossCostType/LossCostType";
+import RoleList from "./page/admin/managerRole/RoleList";
 import TripList from "./page/admin/managerTrip/TripList";
-import RenterCar from "./page/RenterCar";
-import RewardPoints from "./page/profile/RewardPoints";
-import DetaillTicket from "./page/DetaillTicket";
-import Convenient from "./page/Convenient";
-import FixedCosts from "./page/admin/fixedCosts/FixedCosts";
-import Analytics from "./page/admin/analytics/Analytics";
-import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver";
-import TypeOfDriver from "./page/admin/TypeOfDriver/TypeOfDriver";
-import ListVehicleRent from "./page/admin/ListVehicleRent/ListVehicleRent";
-import DriverLogin from "./page/driver/Login"; // Import trang Driver Login
-import History from "./page/driver/History";
+import UserList from "./page/admin/managerUser/UserList";
+import VehicleList from "./page/admin/managerVehicle/ListVehicle";
 import DriverCreateTicket from "./page/driver/DriverCreateTicket";
+import DriverRequests from "./page/driver/DriverRequest";
+import History from "./page/driver/History";
+import DriverLogin from "./page/driver/Login"; // Import trang Driver Login
 import UpdateTicket from "./page/driver/UpdateTicket";
-import DriverRequests from "./page/driver/DriverRequest"
+import ChangePassword from "./page/profile/ChangePassword";
+import Info from "./page/profile/Info";
+import Profile from "./page/profile/Profile";
+import RewardPoints from "./page/profile/RewardPoints";
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -53,6 +53,7 @@ export default function useRouteElements() {
         { index: true, element: <Info /> },
         { path: "change-pass", element: <ChangePassword /> },
         { path: "reward-point", element: <RewardPoints /> },
+        { path: "my-order", element: <RewardPoints /> },
       ],
     },
     {
@@ -99,7 +100,7 @@ export default function useRouteElements() {
     },
     {
       path: "/driver",
-     
+
       children: [
         {
           path: "history", // URL: /driver/history
@@ -108,7 +109,6 @@ export default function useRouteElements() {
         {
           path: "login", // URL: /driver/profile
           element: <DriverLogin />,
-
         },
         {
           path: "update-ticket", // URL: /driver/update-ticket/:ticketId

@@ -1,17 +1,5 @@
-import {
-  Breadcrumb,
-  Button,
-  Checkbox,
-  DatePicker,
-  Drawer,
-  Form,
-  Input,
-  message,
-  Popconfirm,
-  Table,
-} from "antd";
+import { Breadcrumb, Button, Drawer, Form, Input, message, Table } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { checkLoginToken } from "../../../utils";
 const LossCostType = () => {
@@ -43,9 +31,10 @@ const LossCostType = () => {
     setIdUser(null);
   };
 
-  const confirm = async (e) => {
+  const handleDelete = async (e) => {
     await axios.delete(
-      "https://boring-wiles.202-92-7-204.plesk.page/api/LossCostType/deleteLossCostType/" + e,
+      "https://boring-wiles.202-92-7-204.plesk.page/api/LossCostType/deleteLossCostType/" +
+        e,
       {
         headers: {
           Authorization: "Bearer " + checkLoginToken(),
@@ -71,17 +60,20 @@ const LossCostType = () => {
       render: ({ description, id }) => {
         return (
           <div className="space-x-5">
-           
-              <Button  onClick={() => confirm(id)}  htmlType="" className="bg-red-500 text-white font-semibold">
-                Remove
-              </Button>
+            <Button
+              onClick={() => handleDelete(id)}
+              htmlType=""
+              className="bg-red-500 text-white font-semibold"
+            >
+              Remove
+            </Button>
             <Button
               onClick={() => {
                 setCheckAdd(description);
                 setIdUser(id);
                 showDrawer();
               }}
-              htmlType="" 
+              htmlType=""
               className="font-semibold"
             >
               Sửa
@@ -129,7 +121,8 @@ const LossCostType = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/" + idUser
+          "https://boring-wiles.202-92-7-204.plesk.page:8082/api/Driver/" +
+            idUser
         );
         const data = await response.json();
         form.setFieldsValue({

@@ -31,7 +31,12 @@ const Profile = () => {
                     Thành viên <strong>Thường</strong>
                   </span>
                 </li>
-                <li className="flex items-center text-gray-700">
+                <li
+                  className="flex items-center text-gray-700 cursor-pointer"
+                  onClick={() => {
+                    navigate("/profile/my-order");
+                  }}
+                >
                   <i className="fas fa-box mr-2"></i>
                   <span>Đơn hàng của tôi</span>
                 </li>
