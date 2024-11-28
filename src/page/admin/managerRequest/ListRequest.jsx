@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Spin, Table } from "antd";
+import { Breadcrumb, Button, message, Spin, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,26 @@ const ListRequest = () => {
 
   const handleRequestDetails = (id) => {
     navigate(`/dashboard/request/${id}`);
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      const response = await axios.post(
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Request/acceptCancleTicket/${id}`,
+        null,
+        {
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+          },
+        }
+      );
+
+      if (response && response.status === 200) {
+        message.success("Xác nhận thành công");
+      }
+    } catch (error) {
+      message.error("Xác nhận không thành công");
+    }
   };
 
   const columns = [
