@@ -92,20 +92,24 @@ const ListRequest = () => {
     fetchingDataRequest();
   }, []);
 
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <>
       <Breadcrumb routes={[{ breadcrumbName: "Dashboard/Trip" }]} />
       <div className="mt-5">
-        {isPending ? (
-          <Spin tip="Loading..." />
-        ) : (
-          <Table
-            dataSource={dataRequest}
-            columns={columns}
-            rowKey="id"
-            pagination={{ pageSize: 5 }}
-          />
-        )}
+        <Table
+          dataSource={dataRequest}
+          columns={columns}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+        />
       </div>
     </>
   );
