@@ -1,8 +1,8 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { checkLoginToken } from "../utils";
-import { useContext, useRef, useState } from "react";
 import { Avatar } from "antd";
+import { useContext, useRef, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/app.context";
+import { checkLoginToken } from "../utils";
 
 const Header = ({ setOpenLogin }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,12 +16,12 @@ const Header = ({ setOpenLogin }) => {
       <div className="Navbar2__Container-sa2air-0 jblxKL undefined header-container">
         <div className="header-left">
           <div className="logo">
-            <a href="/">
+            <Link to="/">
               <img
                 src="https://storage.googleapis.com/fe-production/svgIcon/icon_vxr_full_2.svg"
                 alt="logo"
               />
-            </a>
+            </Link>
           </div>
           <a
             className="rtb"
