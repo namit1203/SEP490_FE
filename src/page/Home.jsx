@@ -40,7 +40,6 @@ const Home = () => {
   });
   const handelLogin = async () => {
     try {
- 
       if (checkTab == "login") {
         const { data } = await axios.post(
           "https://boring-wiles.202-92-7-204.plesk.page/api/Auth/login",
@@ -50,13 +49,15 @@ const Home = () => {
           message.success("Login successful");
           localStorage.setItem("token", data);
           const responseCheckLogin = await axios.get(
-            "https://boring-wiles.202-92-7-204.plesk.page//api/Auth/userProfile",
+            "https://boring-wiles.202-92-7-204.plesk.page/api/Auth/userProfile",
             {
               headers: {
                 Authorization: "Bearer " + data,
               },
             }
           );
+
+          console.log("responseCheckLogin", responseCheckLogin);
           localStorage.setItem(
             "profile",
             JSON.stringify(responseCheckLogin.data)
@@ -982,21 +983,12 @@ const Home = () => {
                         role="presentation"
                       />
                     </div>
- 
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-          <div className="homepage__BodyWrapper-bs2n93-4 dIMjCF">
-
-
-
-
-
-
-          </div>
+          <div className="homepage__BodyWrapper-bs2n93-4 dIMjCF"></div>
           <Footer />
         </div>
       </div>
