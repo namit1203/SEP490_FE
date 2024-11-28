@@ -11,7 +11,6 @@ const Header = ({ setOpenLogin }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const trigger = useRef(null);
   const { profile } = useContext(AppContext);
-  console.log(profile, "profile");
   return (
     <div>
       <div className="Navbar2__Container-sa2air-0 jblxKL undefined header-container">

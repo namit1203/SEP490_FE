@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import { createSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { message } from "antd";
-import { checkLoginToken } from "../utils";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/app.context";
+import Footer from "./Footer";
+import Header from "./Header";
 const Home = () => {
+  const { setProfile } = useContext(AppContext);
   const [openLogin, setOpenLogin] = useState(false);
   const [checkTab, setChecktab] = useState("login");
   const [otp, setOtp] = useState(false);
@@ -58,10 +59,14 @@ const Home = () => {
           );
 
           console.log("responseCheckLogin", responseCheckLogin);
-          localStorage.setItem(
-            "profile",
-            JSON.stringify(responseCheckLogin.data)
-          );
+
+          if (responseCheckLogin) {
+            setProfile(responseCheckLogin.data);
+            localStorage.setItem(
+              "profile",
+              JSON.stringify(responseCheckLogin.data)
+            );
+          }
           setOpenLogin(false);
         } else {
           message.error("Login faild");
