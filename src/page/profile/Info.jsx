@@ -1,19 +1,33 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/app.context";
 import { checkLoginToken } from "../../utils";
 
 const Info = () => {
   const { profile } = useContext(AppContext);
+
   const [formData, setFormData] = useState({
-    username: profile?.username || "",
-    email: profile?.email || "",
-    numberPhone: profile?.numberPhone || "",
-    avatar: profile?.avatar || "",
-    fullName: profile?.fullName || "",
-    address: profile?.address || "",
-    dob: profile?.dob?.split("T")?.[0] || "",
+    username: "",
+    email: "",
+    numberPhone: "",
+    avatar: "",
+    fullName: "",
+    address: "",
+    dob: "",
   });
 
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        username: profile?.username || "",
+        email: profile?.email || "",
+        numberPhone: profile?.numberPhone || "",
+        avatar: profile?.avatar || "",
+        fullName: profile?.fullName || "",
+        address: profile?.address || "",
+        dob: profile?.dob?.split("T")?.[0] || "",
+      });
+    }
+  }, [profile]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -25,7 +39,8 @@ const Info = () => {
   const handleSave = async () => {
     try {
       const response = await fetch(
-        `https://boring-wiles.202-92-7-204.plesk.page/api/User/EditProfile/`+ profile.id,
+        `https://boring-wiles.202-92-7-204.plesk.page/api/User/EditProfile/` +
+          profile.id,
         {
           method: "PUT",
           headers: {
