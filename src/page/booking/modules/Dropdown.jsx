@@ -1,4 +1,3 @@
-// Dropdown.js
 import React from "react";
 
 const Dropdown = ({ filteredOptions, isOpen, handleOptionClick }) => {

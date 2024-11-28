@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import DropdownSearch from "./Dropdown";
 import { options } from "../../../mock/location";
+import DropdownSearch from "./Dropdown";
 
 export default function SearchBooking() {
   const [fromInputValue, setFromInputValue] = useState(options[0].value);
@@ -29,17 +29,16 @@ export default function SearchBooking() {
     setOpenDropdown(null);
   };
 
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (
-        (fromDropdownRef.current && !fromDropdownRef.current.contains(event.target)) &&
-        (toDropdownRef.current && !toDropdownRef.current.contains(event.target))
-      ) {
-        setOpenDropdown(null);
-      }
-    },
-    []
-  );
+  const handleClickOutside = useCallback((event) => {
+    if (
+      fromDropdownRef.current &&
+      !fromDropdownRef.current.contains(event.target) &&
+      toDropdownRef.current &&
+      !toDropdownRef.current.contains(event.target)
+    ) {
+      setOpenDropdown(null);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -47,7 +46,8 @@ export default function SearchBooking() {
   }, [handleClickOutside]);
 
   const handleFromInputClick = () => {
-    setOpenDropdown(openDropdown === "from" ? null : "from");dropdown
+    setOpenDropdown(openDropdown === "from" ? null : "from");
+    dropdown;
   };
 
   const handleToInputClick = () => {
@@ -55,12 +55,12 @@ export default function SearchBooking() {
   };
 
   return (
-    <div className="flex items-center p-4">
+    <div className="p-4 w-full">
       <div className="flex gap-4">
         <div className="border rounded-lg border-solid border-[rgb(224,224,224)]">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 h-[54px]">
             {/* Start - Nơi xuất phát */}
-            <div className="flex flex-row gap-2 px-4 py-0 h-[54px] border-r-[rgb(224,224,224)] border-r border-solid">
+            <div className="flex flex-row gap-2 px-4 py-0 border-r-[rgb(224,224,224)] border-r border-solid">
               <div className="flex flex-col justify-center items-center">
                 <img
                   src="https://229a2c9fe669f7b.cmccloud.com.vn/svgIcon/pickup_vex_blue_24dp.svg"
@@ -92,14 +92,17 @@ export default function SearchBooking() {
                     />
                   )}
                 </div>
-                <label className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable" htmlFor="from_input">
+                <label
+                  className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable"
+                  htmlFor="from_input"
+                >
                   Nơi xuất phát
                 </label>
               </div>
             </div>
 
             {/* End - Nơi đến */}
-            <div className="flex flex-row gap-2 px-4 py-0 h-[54px]">
+            <div className="flex flex-row gap-2 px-4 py-0">
               <div className="flex flex-col justify-center items-center">
                 <img
                   src="https://229a2c9fe669f7b.cmccloud.com.vn/svgIcon/dropoff_new_24dp.svg"
@@ -131,12 +134,52 @@ export default function SearchBooking() {
                     />
                   )}
                 </div>
-                <label className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable" htmlFor="to_input">
+                <label
+                  className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable"
+                  htmlFor="to_input"
+                >
                   Nơi đến
                 </label>
               </div>
             </div>
+
+            {/* Time - Ngày đi */}
+            <div className="flex flex-row gap-2 px-4 py-0 border-l-[rgb(224,224,224)] border-l border-solid">
+              <div className="flex flex-col justify-center items-center">
+                <img
+                  src="https://storage.googleapis.com/fe-production/svgIcon/event_vex_blue_24dp.svg"
+                  width="24"
+                  height="24"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-1 flex-col-reverse justify-around w-full">
+                <div ref={toDropdownRef} className="relative w-full">
+                  {/* Input */}
+                  <input
+                    type="datetime-local"
+                    className="outline-none !border-none !ring-0 !text-base !p-0 font-semibold"
+                  />
+                </div>
+                <label
+                  className="base__Caption-sc-1tvbuqk-26 hTYbup color--light-disable"
+                  htmlFor="to_input"
+                >
+                  Ngày đi
+                </label>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="grow">
+          <button
+            data-testid="SearchWidget.search"
+            data-tracking-event="search_tickets"
+            className="ant-btn DesktopSearchWidgetInterface__ButtonDateStyled-sc-9goqqe-0 DesktopSearchWidgetInterface__ButtonSearchStyled-sc-9goqqe-1 kvbcsM jfbJs button-search ant-btn-block"
+          >
+            <span>Tìm kiếm</span>
+          </button>
         </div>
       </div>
     </div>
