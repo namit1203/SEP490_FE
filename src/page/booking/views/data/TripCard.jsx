@@ -1,9 +1,9 @@
-// TripCard.tsx
 import { Tabs } from "antd";
 import React from "react";
 import { ImageGallery } from "./ImageGallery";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
+import SelectTrip from "./SelectTrip";
 
 export const TripCard = ({ index, onToggleDetails, showDetails }) => {
   const tabItems = [
@@ -62,6 +62,7 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
         </section>
       </div>
       {showDetails && <Tabs defaultActiveKey="1" items={tabItems} />}
+      <SelectTrip />
     </div>
   );
 };
