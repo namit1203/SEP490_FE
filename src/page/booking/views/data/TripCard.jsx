@@ -97,7 +97,7 @@ export const TripCard = ({
       {activeCardIndex === index && (
         <Tabs defaultActiveKey="1" items={tabItems} />
       )}
-      {selectedTrip === index && <SelectTrip />}
+      {selectedTrip === index && <SelectTrip data={data} />}
     </div>
   );
 };

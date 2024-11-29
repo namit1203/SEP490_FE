@@ -2,7 +2,8 @@ import { Input } from "antd";
 import React from "react";
 import IconsSeat from "../../../../components/icons/seat";
 
-export default function SelectTrip() {
+export default function SelectTrip({ data }) {
+  console.log("data", data);
   return (
     <>
       <div className="w-full">
@@ -31,10 +32,13 @@ export default function SelectTrip() {
         </div>
         <div className="flex flex-col">
           <span>
-            Tổng cộng: <span className="font-bold text-blue-600">80,000đ</span>
+            Tổng cộng:
+            <span className="font-bold text-blue-600">
+              {data?.listVehicle[0]?.price?.toLocaleString()}đ
+            </span>
           </span>
           <button className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white">
-            Thanh toán
+            Đặt chuyến
           </button>
         </div>
       </div>
