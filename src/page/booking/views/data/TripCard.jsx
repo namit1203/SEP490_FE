@@ -13,26 +13,13 @@ export const TripCard = ({
   setActiveCardIndex,
   data,
 }) => {
-  const handleSelectTrip = React.useCallback((index) => {
-    setActiveCardIndex((prevActiveCardIndex) =>
-      prevActiveCardIndex === index ? null : index
-    );
-    setSelectedTrip((prevSelectedTrip) =>
-      prevSelectedTrip === index ? null : index
-    );
-  }, []);
+  const toggleDetails = (index) => {
+    setActiveCardIndex((prev) => (prev === index ? null : index));
+  };
 
-  const toggleDetails = React.useCallback(
-    (index) => {
-      setActiveCardIndex((prevActiveCardIndex) =>
-        prevActiveCardIndex === index ? null : index
-      );
-      if (selectedTrip === index) {
-        handleSelectTrip(null);
-      }
-    },
-    [selectedTrip, handleSelectTrip]
-  );
+  const handleSelectTrip = (index) => {
+    setSelectedTrip((prev) => (prev === index ? null : index));
+  };
 
   const tabItems = [
     {
