@@ -1,5 +1,5 @@
 import React from "react";
-import DataFilter from "./data/DataFilter";
+import DataTrip from "./data/DataTrip";
 import BookingFilter from "./filter/BookingFilter";
 import BookingSort from "./sort/BookingSort";
 
@@ -37,7 +37,7 @@ export default function DataViews() {
             170 chuyến
           </span>
         </div>
-        <DataFilter />
+        <DataTrip />
       </div>
     </div>
   );
