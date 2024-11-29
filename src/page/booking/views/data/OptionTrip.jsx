@@ -1,10 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../../stores/hooks";
 
 export default function OptionTrip({ data }) {
   const startPointArr = useAppSelector((state) => state.trips?.startPointArr);
   const endPointArr = useAppSelector((state) => state.trips?.endPointArr);
+  const navigate = useNavigate();
 
+  const handleTransaction = () => {
+    localStorage.setItem("priceTrip", data?.listVehicle[0]?.price);
+    navigate("/bookingconfirmation/" + data.id);
+  };
   return (
     <>
       <div
@@ -31,6 +37,10 @@ export default function OptionTrip({ data }) {
                   id="pickup1"
                   name="pickup"
                   className="mr-2"
+                  onChange={(e) => {
+                    localStorage.setItem("startTime", item?.timeStartDetils);
+                    localStorage.setItem("startPoint", item?.pointStartDetails);
+                  }}
                 />
                 <label>
                   <span className="font-bold">{item?.timeStartDetils}</span> •
@@ -58,6 +68,10 @@ export default function OptionTrip({ data }) {
                   id="pickup2"
                   name="pickup2"
                   className="mr-2"
+                  onChange={(e) => {
+                    localStorage.setItem("endTime", item?.timeEndDetails);
+                    localStorage.setItem("endPoint", item?.pointEndDetails);
+                  }}
                 />
                 <label>
                   <span className="font-bold">{item?.timeEndDetails}</span> •
@@ -83,7 +97,10 @@ export default function OptionTrip({ data }) {
           Còn 29 chỗ
         </span>
 
-        <button className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white">
+        <button
+          className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white"
+          onClick={handleTransaction}
+        >
           Thanh toán
         </button>
       </div>
