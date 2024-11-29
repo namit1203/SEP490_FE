@@ -66,9 +66,13 @@ export default function OptionTrip({ data }) {
         </div>
       </div>
 
-      <div className="flex justify-between mt-4 items-center">
+      <div className="flex justify-between mt-4 items-baseline">
         <span className="text-md font-medium">
           Ghế: <span className="text-blue-600 text-md">A3</span>
+        </span>
+
+        <span className="text-[rgb(72, 72, 72)] mt-2 text-sm font-medium text-right">
+          Còn 29 chỗ
         </span>
 
         <button className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white">

@@ -3,6 +3,7 @@ import React from "react";
 import { getTripDetailsById } from "../../../../stores/BookingCar/action";
 import { useAppDispatch } from "../../../../stores/hooks";
 import { ImageGallery } from "./ImageGallery";
+import OptionTrip from "./OptionTrip";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
 import SelectTrip from "./SelectTrip";
@@ -69,7 +70,7 @@ export const TripCard = ({
             Từ {data?.listVehicle[0]?.price?.toLocaleString()}đ
           </span>
           <p className="text-[rgb(72, 72, 72)] mt-2 text-sm font-medium text-right">
-            Còn {data?.listVehicle[0]?.numberSeat} chỗ trống
+            Xe {data?.listVehicle[0]?.numberSeat} chỗ
           </p>
           <div className="flex items-baseline gap-3 justify-between">
             <p
@@ -98,6 +99,7 @@ export const TripCard = ({
         <Tabs defaultActiveKey="1" items={tabItems} />
       )}
       {selectedTrip === index && <SelectTrip data={data} />}
+      <OptionTrip data={data} />
     </div>
   );
 };
