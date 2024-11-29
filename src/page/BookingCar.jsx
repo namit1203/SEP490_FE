@@ -6,7 +6,7 @@ export default function BookingCar() {
   return (
     <>
       <Header />
-      <div className="max-w-[1036px] mx-auto">
+      <div className="w-[1036px] flex flex-col gap-5 m-auto pr-2.5 pt-5">
         <BookingCarViews />
       </div>
       <Footer />
