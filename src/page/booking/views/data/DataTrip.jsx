@@ -7,7 +7,7 @@ import { Empty } from 'antd';
 export default function DataTrip() {
   const DataTripStaion = useAppSelector((state) => state.trips?.data);
   const isLoading = useAppSelector((state) => state.trips?.loading);
-  const [selectedTrip, setSelectedTrip] = React.useState(null);
+  const [selectedTrip, setSelectedTrip] = React.useState({});
   const [activeCardIndex, setActiveCardIndex] = React.useState(null);
 
   const [currentPage, setCurrentPage] = React.useState(1);

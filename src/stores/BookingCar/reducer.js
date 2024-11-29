@@ -6,6 +6,8 @@ const bookingSlice = createSlice({
   initialState: {
     data: [],
     tripDetails: [],
+    promotions: [],
+    loadingPromotions: false,
     loadingDeitals: false,
     loading: false,
     error: null,

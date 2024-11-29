@@ -17,6 +17,8 @@ export const TripCard = ({
   data,
 }) => {
   const dispatch = useAppDispatch();
+  const [showOptionTrip, setShowOptionTrip] = React.useState(false);
+
   const handleOpenDetailsTrip = (id, index) => {
     if (activeCardIndex !== index) {
       dispatch(getTripDetailsById({ id }));
@@ -28,8 +30,24 @@ export const TripCard = ({
     setActiveCardIndex(null);
   };
   const handleSelectTrip = (index) => {
-    setSelectedTrip((prev) => (prev === index ? null : index));
+    setSelectedTrip((prev) => {
+      const isCurrentlySelected = prev[index];
+
+      // Nếu đóng chuyến (isCurrentlySelected === true), tắt OptionTrip
+      if (isCurrentlySelected) {
+        setShowOptionTrip(false);
+      }
+
+      return {
+        ...prev,
+        [index]: !isCurrentlySelected,
+      };
+    });
   };
+
+  const handleContinue = React.useCallback(() => {
+    setShowOptionTrip(true);
+  }, []);
 
   const tabItems = [
     {
@@ -87,7 +105,7 @@ export const TripCard = ({
               className="mt-2 px-4 block py-2 bg-yellow-400 rounded-none border-none text-sm text-gray-700"
               onClick={() => handleSelectTrip(index)}
             >
-              {selectedTrip === index ? "Đóng" : "Chọn chuyến"}
+              {selectedTrip[index] ? "Đóng" : "Chọn chuyến"}
             </button>
           </div>
           <div className="text-right text-sm text-gray-600 mt-4 font-medium">
@@ -98,8 +116,10 @@ export const TripCard = ({
       {activeCardIndex === index && (
         <Tabs defaultActiveKey="1" items={tabItems} />
       )}
-      {selectedTrip === index && <SelectTrip data={data} />}
-      <OptionTrip data={data} />
+      {selectedTrip[index] && !showOptionTrip && (
+        <SelectTrip data={data} onContinue={handleContinue} />
+      )}
+      {selectedTrip[index] && showOptionTrip && <OptionTrip data={data} />}
     </div>
   );
 };

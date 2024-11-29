@@ -2,7 +2,7 @@ import { Input } from "antd";
 import React from "react";
 import IconsSeat from "../../../../components/icons/seat";
 
-export default function SelectTrip({ data }) {
+export default function SelectTrip({ data, onContinue }) {
   return (
     <>
       <div className="w-full">
@@ -36,7 +36,10 @@ export default function SelectTrip({ data }) {
               {data?.listVehicle[0]?.price?.toLocaleString()}đ
             </span>
           </span>
-          <button className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white">
+          <button
+            className="mt-2 px-4 block py-2 bg-blue-400 rounded-none border-none text-sm text-white"
+            onClick={onContinue}
+          >
             Đặt chuyến
           </button>
         </div>
