@@ -15,7 +15,13 @@ export default function SelectTrip({ data, onContinue }) {
             <IconsSeat />
           </div>
           <div className="flex items-center gap-3">
-            <Input type="number" placeholder="Nhập số lượng ghế" />
+            <Input
+              type="number"
+              placeholder="Nhập số lượng ghế"
+              onChange={(e) => {
+                localStorage.setItem("quantity", e.target.value);
+              }}
+            />
             <label className="font-medium text-sm whitespace-nowrap">
               Số lượng ghế
             </label>
