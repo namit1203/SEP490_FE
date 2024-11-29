@@ -16,11 +16,16 @@ export const TripCard = ({
   data,
 }) => {
   const dispatch = useAppDispatch();
-  const handleDetailsTrip = (id, index) => {
-    setActiveCardIndex((prev) => (prev === index ? null : index));
-    dispatch(getTripDetailsById({ id }));
+  const handleOpenDetailsTrip = (id, index) => {
+    if (activeCardIndex !== index) {
+      dispatch(getTripDetailsById({ id }));
+      setActiveCardIndex(index);
+    }
   };
 
+  const handleCloseDetailsTrip = () => {
+    setActiveCardIndex(null);
+  };
   const handleSelectTrip = (index) => {
     setSelectedTrip((prev) => (prev === index ? null : index));
   };
@@ -69,7 +74,11 @@ export const TripCard = ({
           <div className="flex items-baseline gap-3 justify-between">
             <p
               className="text-sm mb-0 text-blue-600 underline cursor-pointer"
-              onClick={() => handleDetailsTrip(data?.id, index)}
+              onClick={
+                activeCardIndex === index
+                  ? handleCloseDetailsTrip
+                  : () => handleOpenDetailsTrip(data?.id, index)
+              }
             >
               {activeCardIndex === index ? "Ẩn chi tiết" : "Thông tin chi tiết"}
             </p>
