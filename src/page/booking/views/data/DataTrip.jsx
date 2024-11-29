@@ -36,7 +36,7 @@ export default function DataTrip() {
 
   return (
     <div className="space-y-4">
-      <div className="border rounded-lg p-4 shadow-md">
+      <>
         {paginatedData &&
           paginatedData.map((item, index) => (
             <TripCard
@@ -49,7 +49,7 @@ export default function DataTrip() {
               data={item}
             />
           ))}
-      </div>
+      </>
 
       {/* Pagination controls */}
       <div className="flex justify-center mt-4">

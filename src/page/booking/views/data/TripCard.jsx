@@ -18,10 +18,10 @@ export const TripCard = ({
   const dispatch = useAppDispatch();
   const handleDetailsTrip = async (id, index) => {
     try {
+      setActiveCardIndex((prev) => (prev === index ? null : index));
       if (activeCardIndex === null) {
         await dispatch(getTripDetailsById({ id })).unwrap();
       }
-      setActiveCardIndex((prev) => (prev === index ? null : index));
     } catch (error) {
       console.error(error);
     }
