@@ -1,6 +1,10 @@
 import { Tabs } from "antd";
 import React from "react";
-import { getTripDetailsById } from "../../../../stores/BookingCar/action";
+import {
+  getEndTripDetailsById,
+  getStartTripDetailsById,
+  getTripDetailsById,
+} from "../../../../stores/BookingCar/action";
 import { useAppDispatch } from "../../../../stores/hooks";
 import { ImageGallery } from "./ImageGallery";
 import OptionTrip from "./OptionTrip";
@@ -33,7 +37,6 @@ export const TripCard = ({
     setSelectedTrip((prev) => {
       const isCurrentlySelected = prev[index];
 
-      // Nếu đóng chuyến (isCurrentlySelected === true), tắt OptionTrip
       if (isCurrentlySelected) {
         setShowOptionTrip(false);
       }
@@ -45,8 +48,16 @@ export const TripCard = ({
     });
   };
 
-  const handleContinue = React.useCallback(() => {
-    setShowOptionTrip(true);
+  const handleContinue = React.useCallback(async () => {
+    try {
+      setShowOptionTrip(true);
+      await Promise.all([
+        dispatch(getStartTripDetailsById({ id: data?.id })),
+        dispatch(getEndTripDetailsById({ id: data?.id })),
+      ]);
+    } catch (error) {
+      console.error("Error fetching trip details:", error);
+    }
   }, []);
 
   const tabItems = [

@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTripDetailsById, searchTrip } from "./action";
+import {
+  getEndTripDetailsById,
+  getStartTripDetailsById,
+  getTripDetailsById,
+  searchTrip,
+} from "./action";
 
 const bookingSlice = createSlice({
   name: "booking",
@@ -14,6 +19,8 @@ const bookingSlice = createSlice({
     startPoint: "Hà Nội",
     endPoint: "Bắc Giang",
     time: null,
+    startPointArr: [],
+    endPointArr: [],
   },
   reducers: {
     setStartPoint: (state, action) => {
@@ -55,6 +62,26 @@ const bookingSlice = createSlice({
       .addCase(getTripDetailsById.rejected, (state, action) => {
         state.loadingDeitals = false;
         state.error = action.error.message;
+      })
+
+      // startpoint
+      .addCase(getStartTripDetailsById.pending, (state) => {
+        state.loadingDeitals = true;
+        state.error = null;
+      })
+      .addCase(getStartTripDetailsById.fulfilled, (state, action) => {
+        state.loadingDeitals = false;
+        state.startPointArr = action.payload;
+      })
+
+      // endpoint
+      .addCase(getEndTripDetailsById.pending, (state) => {
+        state.loadingDeitals = true;
+        state.error = null;
+      })
+      .addCase(getEndTripDetailsById.fulfilled, (state, action) => {
+        state.loadingDeitals = false;
+        state.endPointArr = action.payload;
       });
   },
 });

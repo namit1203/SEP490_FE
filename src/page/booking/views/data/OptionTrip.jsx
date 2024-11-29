@@ -1,6 +1,10 @@
 import React from "react";
+import { useAppSelector } from "../../../../stores/hooks";
 
 export default function OptionTrip({ data }) {
+  const startPointArr = useAppSelector((state) => state.trips?.startPointArr);
+  const endPointArr = useAppSelector((state) => state.trips?.endPointArr);
+
   return (
     <>
       <div
@@ -19,7 +23,7 @@ export default function OptionTrip({ data }) {
           <div className="text-green-600 text-sm my-2">
             Cách vị trí của bạn 1.5 km
           </div>
-          {[1, 2, 3]?.map((index) => {
+          {startPointArr?.map((item, index) => {
             return (
               <div key={index} className="mb-4">
                 <input
@@ -29,8 +33,10 @@ export default function OptionTrip({ data }) {
                   className="mr-2"
                 />
                 <label>
-                  <span className="font-bold">05:00:00</span> •
-                  <span className="font-semibold text-sm">Bến Xe Mỹ Đình</span>
+                  <span className="font-bold">{item?.timeStartDetils}</span> •
+                  <span className="font-semibold text-sm">
+                    {item?.pointStartDetails}
+                  </span>
                 </label>
                 <div className="text-green-600 text-sm my-2">
                   Cách vị trí của bạn 7.6 km
@@ -44,7 +50,7 @@ export default function OptionTrip({ data }) {
           <div className="text-green-600 text-sm my-2">
             Cách vị trí của bạn 240.1 km
           </div>
-          {[1, 2, 3]?.map((index) => {
+          {endPointArr?.map((item, index) => {
             return (
               <div key={index} className="mb-4">
                 <input
@@ -54,8 +60,10 @@ export default function OptionTrip({ data }) {
                   className="mr-2"
                 />
                 <label>
-                  <span className="font-bold">05:00:00</span> •
-                  <span className="font-semibold text-sm">Bến Xe Mỹ Đình</span>
+                  <span className="font-bold">{item?.timeEndDetails}</span> •
+                  <span className="font-semibold text-sm">
+                    {item?.pointEndDetails}
+                  </span>
                 </label>
                 <div className="text-green-600 text-sm my-2">
                   Cách vị trí của bạn 7.6 km

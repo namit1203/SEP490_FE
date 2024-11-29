@@ -32,7 +32,7 @@ export default function SelectTrip({ data, onContinue }) {
         <div className="flex flex-col">
           <span>
             Tổng cộng:
-            <span className="font-bold text-blue-600">
+            <span className="font-bold text-blue-600 ml-1">
               {data?.listVehicle[0]?.price?.toLocaleString()}đ
             </span>
           </span>
