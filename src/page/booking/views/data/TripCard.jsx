@@ -1,5 +1,7 @@
 import { Tabs } from "antd";
 import React from "react";
+import { getTripDetailsById } from "../../../../stores/BookingCar/action";
+import { useAppDispatch } from "../../../../stores/hooks";
 import { ImageGallery } from "./ImageGallery";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
@@ -13,8 +15,16 @@ export const TripCard = ({
   setActiveCardIndex,
   data,
 }) => {
-  const toggleDetails = (index) => {
-    setActiveCardIndex((prev) => (prev === index ? null : index));
+  const dispatch = useAppDispatch();
+  const handleDetailsTrip = async (id, index) => {
+    try {
+      if (activeCardIndex === null) {
+        await dispatch(getTripDetailsById({ id })).unwrap();
+      }
+      setActiveCardIndex((prev) => (prev === index ? null : index));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSelectTrip = (index) => {
@@ -65,7 +75,7 @@ export const TripCard = ({
           <div className="flex items-baseline gap-3 justify-between">
             <p
               className="text-sm mb-0 text-blue-600 underline cursor-pointer"
-              onClick={() => toggleDetails(index)}
+              onClick={() => handleDetailsTrip(data?.id, index)}
             >
               {activeCardIndex === index ? "Ẩn chi tiết" : "Thông tin chi tiết"}
             </p>

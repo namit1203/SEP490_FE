@@ -10,9 +10,23 @@ const searchTrip = createAsyncThunk(
     }
 
     const response = await fetch(url);
+
     const data = await response.json();
     return data;
   }
 );
 
-export { searchTrip };
+const getTripDetailsById = createAsyncThunk(
+  "trip/tripDetailById",
+  async ({ id }) => {
+    let url = `https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=${id}`;
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    return data;
+  }
+);
+
+export { getTripDetailsById, searchTrip };

@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { searchTrip } from "./action";
+import { getTripDetailsById, searchTrip } from "./action";
 
 const bookingSlice = createSlice({
   name: "booking",
   initialState: {
     data: [],
+    tripDetails: [],
+    loadingDeitals: false,
     loading: false,
     error: null,
     startPoint: "Hà Nội",
@@ -25,6 +27,7 @@ const bookingSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      // search
       .addCase(searchTrip.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -33,8 +36,22 @@ const bookingSlice = createSlice({
         state.loading = false;
         state.data = action.payload;
       })
+
       .addCase(searchTrip.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message;
+      })
+      // detail by id
+      .addCase(getTripDetailsById.pending, (state) => {
+        state.loadingDeitals = true;
+        state.error = null;
+      })
+      .addCase(getTripDetailsById.fulfilled, (state, action) => {
+        state.loadingDeitals = false;
+        state.tripDetails = action.payload;
+      })
+      .addCase(getTripDetailsById.rejected, (state, action) => {
+        state.loadingDeitals = false;
         state.error = action.error.message;
       });
   },
