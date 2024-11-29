@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { options } from "../../../mock/location";
-import { setEndPoint, setStartPoint } from "../../../stores/BookingCar/reducer";
+import {
+  setEndPoint,
+  setStartPoint,
+  setTime,
+} from "../../../stores/BookingCar/reducer";
 import { useAppDispatch } from "../../../stores/hooks";
 import DropdownSearch from "./Dropdown";
 export default function SearchBooking() {
@@ -11,6 +15,12 @@ export default function SearchBooking() {
   const [toInputValue, setToInputValue] = useState(options[1].value);
 
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  const [dateTime, setDateTime] = useState("");
+
+  const handleChange = (event) => {
+    setDateTime(event.target.value);
+  };
 
   const fromDropdownRef = useRef(null);
 
@@ -52,7 +62,6 @@ export default function SearchBooking() {
 
   const handleFromInputClick = () => {
     setOpenDropdown(openDropdown === "from" ? null : "from");
-    dropdown;
   };
 
   const handleToInputClick = () => {
@@ -62,6 +71,7 @@ export default function SearchBooking() {
   const handleSearch = () => {
     dispatch(setStartPoint(fromInputValue));
     dispatch(setEndPoint(toInputValue));
+    dispatch(setTime(dateTime));
   };
   return (
     <div className="p-4 w-full">
@@ -168,6 +178,8 @@ export default function SearchBooking() {
                   <input
                     type="datetime-local"
                     className="outline-none !border-none !ring-0 !text-base !p-0 font-semibold"
+                    value={dateTime}
+                    onChange={handleChange}
                   />
                 </div>
                 <label
