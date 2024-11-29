@@ -2,6 +2,7 @@ import { Pagination, Spin } from "antd";
 import React from "react";
 import { useAppSelector } from "../../../../stores/hooks";
 import { TripCard } from "./TripCard";
+import { Empty } from 'antd';
 
 export default function DataTrip() {
   const DataTripStaion = useAppSelector((state) => state.trips?.data);
@@ -24,8 +25,8 @@ export default function DataTrip() {
     );
   }
 
-  if (!DataTripStaion) {
-    return <div>không có chuyến nào</div>;
+  if (DataTripStaion.length === 0) {
+    return <Empty />;
   }
 
   const paginatedData = DataTripStaion.slice(
