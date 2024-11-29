@@ -11,6 +11,7 @@ export const TripCard = ({
   setSelectedTrip,
   activeCardIndex,
   setActiveCardIndex,
+  data,
 }) => {
   const handleSelectTrip = React.useCallback((index) => {
     setActiveCardIndex((prevActiveCardIndex) =>
@@ -60,17 +61,19 @@ export const TripCard = ({
     <div className="border rounded-lg p-4 shadow-md mb-4">
       <div className="flex justify-between">
         <section>
-          <h3 className="font-bold text-lg">Nhà xe Phương trang</h3>
-          <p className="text-sm">Hà Nam - Ninh Bình</p>
-          <p className="text-sm mt-2">08:00:00 - Hà Nam</p>
-          <p className="text-sm">Ninh Bình</p>
+          <h3 className="font-bold text-lg capitalize">{data?.fullName}</h3>
+          <p className="text-sm">{data?.description}</p>
+          <p className="text-sm mt-2">
+            {data?.startTime} - {data?.pointStart}
+          </p>
+          <p className="text-sm">{data?.pointEnd}</p>
         </section>
         <section>
           <span className="block font-bold text-lg text-blue-500 text-right">
-            Từ 80,000đ
+            Từ {data?.listVehicle[0]?.price?.toLocaleString()}đ
           </span>
           <p className="text-[rgb(72, 72, 72)] mt-2 text-sm font-medium text-right">
-            Còn 34 chỗ trống
+            Còn {data?.listVehicle[0]?.numberSeat} chỗ trống
           </p>
           <div className="flex items-baseline gap-3 justify-between">
             <p
@@ -86,8 +89,8 @@ export const TripCard = ({
               {selectedTrip === index ? "Đóng" : "Chọn chuyến"}
             </button>
           </div>
-          <div className="text-right text-sm text-green-500 mt-4">
-            Không cần thanh toán trước
+          <div className="text-right text-sm text-gray-600 mt-4 font-medium">
+            Biển số xe : {data?.listVehicle[0]?.licensePlate}
           </div>
         </section>
       </div>
