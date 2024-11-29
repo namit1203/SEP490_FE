@@ -3,7 +3,6 @@ import React from "react";
 import IconsSeat from "../../../../components/icons/seat";
 
 export default function SelectTrip({ data }) {
-  console.log("data", data);
   return (
     <>
       <div className="w-full">
