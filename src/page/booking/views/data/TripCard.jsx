@@ -1,5 +1,5 @@
 import { Tabs } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import { ImageGallery } from "./ImageGallery";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
@@ -12,13 +12,26 @@ export const TripCard = ({
   activeCardIndex,
   setActiveCardIndex,
 }) => {
-  const handleSelectTrip = (index) => {
-    setSelectedTrip(selectedTrip === index ? null : index);
-  };
+  const handleSelectTrip = React.useCallback((index) => {
+    setActiveCardIndex((prevActiveCardIndex) =>
+      prevActiveCardIndex === index ? null : index
+    );
+    setSelectedTrip((prevSelectedTrip) =>
+      prevSelectedTrip === index ? null : index
+    );
+  }, []);
 
-  const toggleDetails = (index) => {
-    setActiveCardIndex(activeCardIndex === index ? null : index);
-  };
+  const toggleDetails = React.useCallback(
+    (index) => {
+      setActiveCardIndex((prevActiveCardIndex) =>
+        prevActiveCardIndex === index ? null : index
+      );
+      if (selectedTrip === index) {
+        handleSelectTrip(null);
+      }
+    },
+    [selectedTrip, handleSelectTrip]
+  );
 
   const tabItems = [
     {
