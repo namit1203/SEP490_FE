@@ -154,7 +154,7 @@ export default function SearchBooking() {
                 />
               </div>
               <div className="flex flex-1 flex-col-reverse justify-around w-full">
-                <div ref={toDropdownRef} className="relative w-full">
+                <div className="relative w-full">
                   {/* Input */}
                   <input
                     type="datetime-local"
