@@ -4,7 +4,7 @@ import { TripCard } from "./TripCard";
 export default function DataTrip() {
   const [activeCardIndex, setActiveCardIndex] = useState(null);
   const toggleDetails = (index) => {
-    setActiveCardIndex(prev => (prev === index ? null : index));
+    setActiveCardIndex((prev) => (prev === index ? null : index));
   };
 
   return (

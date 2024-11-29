@@ -1,11 +1,17 @@
 import { Tabs } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { ImageGallery } from "./ImageGallery";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
 import SelectTrip from "./SelectTrip";
 
 export const TripCard = ({ index, onToggleDetails, showDetails }) => {
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  const handleSelectTrip = (index) => {
+    setSelectedTrip((prev) => (prev === index ? null : index));
+  };
+
   const tabItems = [
     {
       key: "2",
@@ -52,8 +58,11 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
             >
               {showDetails ? "Ẩn chi tiết" : "Thông tin chi tiết"}
             </p>
-            <button className="mt-2 px-4 block py-2 bg-yellow-400 rounded-none border-none text-sm text-gray-700">
-              Chọn chuyến
+            <button
+              className="mt-2 px-4 block py-2 bg-yellow-400 rounded-none border-none text-sm text-gray-700"
+              onClick={() => handleSelectTrip(index)}
+            >
+              {selectedTrip === index ? "Đóng" : "Chọn chuyến"}
             </button>
           </div>
           <div className="text-right text-sm text-green-500 mt-4">
@@ -62,7 +71,7 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
         </section>
       </div>
       {showDetails && <Tabs defaultActiveKey="1" items={tabItems} />}
-      <SelectTrip />
+      {selectedTrip === index && <SelectTrip />}
     </div>
   );
 };
