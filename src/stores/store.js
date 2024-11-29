@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import bookingReducer from "./BookingCar/reducer.js";
 export const store = configureStore({
   reducer: {
-    booking: bookingReducer,
+    trips: bookingReducer,
   },
 });
 
