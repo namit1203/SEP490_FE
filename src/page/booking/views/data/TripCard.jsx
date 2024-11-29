@@ -5,11 +5,19 @@ import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
 import SelectTrip from "./SelectTrip";
 
-export const TripCard = ({ index, onToggleDetails, showDetails }) => {
-  const [selectedTrip, setSelectedTrip] = useState(null);
-
+export const TripCard = ({
+  index,
+  selectedTrip,
+  setSelectedTrip,
+  activeCardIndex,
+  setActiveCardIndex,
+}) => {
   const handleSelectTrip = (index) => {
-    setSelectedTrip((prev) => (prev === index ? null : index));
+    setSelectedTrip(selectedTrip === index ? null : index);
+  };
+
+  const toggleDetails = (index) => {
+    setActiveCardIndex(activeCardIndex === index ? null : index);
   };
 
   const tabItems = [
@@ -54,9 +62,9 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
           <div className="flex items-baseline gap-3 justify-between">
             <p
               className="text-sm mb-0 text-blue-600 underline cursor-pointer"
-              onClick={() => onToggleDetails(index)}
+              onClick={() => toggleDetails(index)}
             >
-              {showDetails ? "Ẩn chi tiết" : "Thông tin chi tiết"}
+              {activeCardIndex === index ? "Ẩn chi tiết" : "Thông tin chi tiết"}
             </p>
             <button
               className="mt-2 px-4 block py-2 bg-yellow-400 rounded-none border-none text-sm text-gray-700"
@@ -70,7 +78,9 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
           </div>
         </section>
       </div>
-      {showDetails && <Tabs defaultActiveKey="1" items={tabItems} />}
+      {activeCardIndex === index && (
+        <Tabs defaultActiveKey="1" items={tabItems} />
+      )}
       {selectedTrip === index && <SelectTrip />}
     </div>
   );

@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { TripCard } from "./TripCard";
 
 export default function DataTrip() {
-  const [activeCardIndex, setActiveCardIndex] = useState(null);
-  const toggleDetails = (index) => {
-    setActiveCardIndex((prev) => (prev === index ? null : index));
-  };
-
+  const [selectedTrip, setSelectedTrip] = React.useState(null);
+  const [activeCardIndex, setActiveCardIndex] = React.useState(null);
   return (
     <div className="space-y-4">
       <div className="border rounded-lg p-4 shadow-md">
@@ -14,8 +11,10 @@ export default function DataTrip() {
           <TripCard
             key={cardIndex}
             index={cardIndex}
-            onToggleDetails={toggleDetails}
-            showDetails={activeCardIndex === cardIndex}
+            selectedTrip={selectedTrip}
+            setSelectedTrip={setSelectedTrip}
+            activeCardIndex={activeCardIndex}
+            setActiveCardIndex={setActiveCardIndex}
           />
         ))}
       </div>
