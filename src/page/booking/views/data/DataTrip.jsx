@@ -24,6 +24,10 @@ export default function DataTrip() {
     );
   }
 
+  if (!DataTripStaion) {
+    return <div>không có chuyến nào</div>;
+  }
+
   const paginatedData = DataTripStaion.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize

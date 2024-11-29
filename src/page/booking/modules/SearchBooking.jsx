@@ -1,14 +1,19 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { options } from "../../../mock/location";
+import { setEndPoint, setStartPoint } from "../../../stores/BookingCar/reducer";
+import { useAppDispatch } from "../../../stores/hooks";
 import DropdownSearch from "./Dropdown";
-
 export default function SearchBooking() {
+  const dispatch = useAppDispatch();
+
   const [fromInputValue, setFromInputValue] = useState(options[0].value);
+
   const [toInputValue, setToInputValue] = useState(options[1].value);
 
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const fromDropdownRef = useRef(null);
+
   const toDropdownRef = useRef(null);
 
   const filteredFromOptions = options.filter((option) =>
@@ -54,6 +59,10 @@ export default function SearchBooking() {
     setOpenDropdown(openDropdown === "to" ? null : "to");
   };
 
+  const handleSearch = () => {
+    dispatch(setStartPoint(fromInputValue));
+    dispatch(setEndPoint(toInputValue));
+  };
   return (
     <div className="p-4 w-full">
       <div className="flex gap-4">
@@ -174,6 +183,7 @@ export default function SearchBooking() {
 
         <div className="grow">
           <button
+            onClick={handleSearch}
             data-testid="SearchWidget.search"
             data-tracking-event="search_tickets"
             className="ant-btn DesktopSearchWidgetInterface__ButtonDateStyled-sc-9goqqe-0 DesktopSearchWidgetInterface__ButtonSearchStyled-sc-9goqqe-1 kvbcsM jfbJs button-search ant-btn-block"

@@ -1,9 +1,12 @@
 import React from "react";
+import { useAppSelector } from "../../../stores/hooks";
 import DataTrip from "./data/DataTrip";
 import BookingFilter from "./filter/BookingFilter";
 import BookingSort from "./sort/BookingSort";
 
 export default function DataViews() {
+  const DataTripStaion = useAppSelector((state) => state.trips?.data);
+
   const sortingOptions = [
     { id: 1, label: "Mặc định" },
     { id: 2, label: "Giờ đi sớm nhất" },
@@ -34,7 +37,7 @@ export default function DataViews() {
             Kết quả:
           </p>
           <span className="font-bold text-2xl leading-8 tracking-[-0.5px]">
-            170 chuyến
+            {DataTripStaion?.length || 0} chuyến
           </span>
         </div>
         <DataTrip />
