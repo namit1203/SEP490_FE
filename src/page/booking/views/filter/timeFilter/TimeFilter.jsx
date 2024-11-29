@@ -6,12 +6,12 @@ export default function TimeFilter() {
   const [endTime, setEndTime] = useState("24:00");
   const [isTimeRangeVisible, setIsTimeRangeVisible] = useState(false);
   return (
-    <div>
+    <div className="pb-4 border-b-[rgb(224,224,224)] border-b border-solid">
       <div
         className="flex justify-between cursor-pointer"
         onClick={() => setIsTimeRangeVisible((prev) => !prev)}
       >
-        <p className="text-base leading-5 font-bold">Giờ đi</p>
+        <p className="text-base leading-5 font-bold mb-0">Giờ đi</p>
         <DropdownIcons />
       </div>
       {/* Time Range Input */}

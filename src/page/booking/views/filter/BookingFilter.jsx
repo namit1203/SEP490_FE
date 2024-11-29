@@ -1,5 +1,6 @@
 import React from "react";
 import TimeFilter from "./timeFilter/TimeFilter";
+import GarageFilter from "./garageFilter/GarageFilter";
 
 export default function BookingFilter() {
   return (
@@ -12,6 +13,8 @@ export default function BookingFilter() {
       </div>
       {/* time filter */}
       <TimeFilter />
+      {/* garage filter */}
+      <GarageFilter />
     </>
   );
 }
