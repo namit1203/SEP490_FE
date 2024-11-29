@@ -16,15 +16,9 @@ export const TripCard = ({
   data,
 }) => {
   const dispatch = useAppDispatch();
-  const handleDetailsTrip = async (id, index) => {
-    try {
-      setActiveCardIndex((prev) => (prev === index ? null : index));
-      if (activeCardIndex === null) {
-        await dispatch(getTripDetailsById({ id })).unwrap();
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleDetailsTrip = (id, index) => {
+    setActiveCardIndex((prev) => (prev === index ? null : index));
+    dispatch(getTripDetailsById({ id }));
   };
 
   const handleSelectTrip = (index) => {
