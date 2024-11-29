@@ -1,6 +1,6 @@
 // TripCard.tsx
-import React from "react";
 import { Tabs } from "antd";
+import React from "react";
 import { ImageGallery } from "./ImageGallery";
 import { PickupDropInfo } from "./PickupDropInfo";
 import { PolicyDetails } from "./PolicyDetails";
@@ -56,9 +56,12 @@ export const TripCard = ({ index, onToggleDetails, showDetails }) => {
               Chọn chuyến
             </button>
           </div>
+          <div className="text-right text-sm text-green-500 mt-4">
+            Không cần thanh toán trước
+          </div>
         </section>
       </div>
       {showDetails && <Tabs defaultActiveKey="1" items={tabItems} />}
     </div>
   );
-}
+};
