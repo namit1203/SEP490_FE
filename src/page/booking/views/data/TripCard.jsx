@@ -4,6 +4,7 @@ import {
   getEndTripDetailsById,
   getStartTripDetailsById,
   getTripDetailsById,
+  getCountSeatDetailsById,
 } from "../../../../stores/BookingCar/action";
 import { useAppDispatch } from "../../../../stores/hooks";
 import { ImageGallery } from "./ImageGallery";
@@ -54,6 +55,7 @@ export const TripCard = ({
       await Promise.all([
         dispatch(getStartTripDetailsById({ id: data?.id })),
         dispatch(getEndTripDetailsById({ id: data?.id })),
+        dispatch(getCountSeatDetailsById({ id: data?.id })),
       ]);
     } catch (error) {
       console.error("Error fetching trip details:", error);

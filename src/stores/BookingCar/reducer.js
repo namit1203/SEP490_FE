@@ -4,6 +4,7 @@ import {
   getStartTripDetailsById,
   getTripDetailsById,
   searchTrip,
+  getCountSeatDetailsById,
 } from "./action";
 
 const bookingSlice = createSlice({
@@ -18,9 +19,10 @@ const bookingSlice = createSlice({
     error: null,
     startPoint: "Hà Nội",
     endPoint: "Bắc Giang",
-    time: null,
+    time: '2024-11-12',
     startPointArr: [],
     endPointArr: [],
+    countseat: 0,
   },
   reducers: {
     setStartPoint: (state, action) => {
@@ -82,6 +84,16 @@ const bookingSlice = createSlice({
       .addCase(getEndTripDetailsById.fulfilled, (state, action) => {
         state.loadingDeitals = false;
         state.endPointArr = action.payload;
+      })
+
+      //countseat
+      .addCase(getCountSeatDetailsById.pending, (state) => {
+        state.loadingDeitals = true;
+        state.error = null;
+      })
+      .addCase(getCountSeatDetailsById.fulfilled, (state, action) => {
+        state.loadingDeitals = false;
+        state.countseat = action.payload;
       });
   },
 });
