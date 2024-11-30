@@ -122,7 +122,11 @@ const Header = ({ setOpenLogin }) => {
                         </span>
 
                         <span className="w-12 h-12 rounded-full">
-                          <Avatar />
+                          <Avatar
+                            src={
+                              "https://statics.oeg.vn/storage/DEFAULT%20AVATAR%20PROFILE/akirofemalev9.webp"
+                            }
+                          />
                         </span>
                         <span>
                           <svg

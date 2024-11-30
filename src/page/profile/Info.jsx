@@ -21,7 +21,7 @@ const Info = () => {
         username: profile?.username || "",
         email: profile?.email || "",
         numberPhone: profile?.numberPhone || "",
-        avatar: profile?.avatar || "",
+        avatar: profile?.avatar || "https://statics.oeg.vn/storage/DEFAULT%20AVATAR%20PROFILE/akirofemalev9.webp",
         fullName: profile?.fullName || "",
         address: profile?.address || "",
         dob: profile?.dob?.split("T")?.[0] || "",
