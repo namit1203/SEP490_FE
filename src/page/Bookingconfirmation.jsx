@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import Header from "./Header";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { checkLoginToken } from "../utils";
-import { AppContext } from "../context/app.context";
 import { message } from "antd";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AppContext } from "../context/app.context";
+import { checkLoginToken } from "../utils";
 import CountdownTimer from "./CountdownTimer";
+import Header from "./Header";
 
 const Bookingconfirmation = () => {
   const navigate = useNavigate();
@@ -15,10 +15,11 @@ const Bookingconfirmation = () => {
   const [promotionId, setPromotionId] = useState([]);
   const [ticketId, setTicketId] = useState(null);
   const [randomCode, setRandomCode] = useState(null);
-
+  const quantity = localStorage.getItem("quantity");
   const [countDown, setCountDown] = useState(false);
   const [checkSelectPromtion, setCheckSelectPromtion] = useState(null);
   const [checkQr, setCheckQr] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState("");
   const handelFetchData = async () => {
     const { data } = await axios.get(
       "https://boring-wiles.202-92-7-204.plesk.page/api/Promotion",
@@ -36,7 +37,8 @@ const Bookingconfirmation = () => {
   };
   const handelFetchDataTipDetails = async () => {
     const { data } = await axios.get(
-      "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" + id,
+      "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" +
+        id,
       {
         headers: {
           Authorization: "Bearer " + checkLoginToken(),
@@ -52,35 +54,33 @@ const Bookingconfirmation = () => {
   }, []);
   const handelBookTrip = async () => {
     try {
-      setCheckQr(true);
-      const dataPayload = {
-        note: "string",
-        typeOfPayment: 1,
-      };
       const response = await axios.post(
-        `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/bookTicket/${id}?promotionCode=${checkSelectPromtion}`,
-        dataPayload,
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/bookTicket/${id}?promotionCode=${checkSelectPromtion}&numberTicket=${quantity}`,
+        { note: "string", typeOfPayment: 1 },
         {
           headers: {
             Authorization: "Bearer " + checkLoginToken(),
           },
         }
       );
-      const getRandomCode = await axios.get(
+
+      const { data: randomCodeData } = await axios.get(
         "https://boring-wiles.202-92-7-204.plesk.page/api/Payment/RandomCode"
       );
-      const codeResult = getRandomCode?.data?.randomNumbers?.result;
-      setTicketId(response?.data?.ticketId);
-      setRandomCode(codeResult);
 
-      // setTimeout(() => {
-      //   navigate("/profile");
-      // }, 300);
+      setTicketId(response.data.ticketId);
+      setRandomCode(randomCodeData.randomNumbers.result);
+
+      if (selectedPayment === "pay-on-bus") {
+        return message.success("Thanh toánh thành công");
+      }
+
+      setCheckQr(true);
     } catch (error) {
-      //
       console.log(error);
     }
   };
+
   const getImgSrc = () => {
     const totalAmount =
       Number(localStorage.getItem("priceTrip")) *
@@ -100,12 +100,13 @@ const Bookingconfirmation = () => {
   const discounts = promotion;
   const handelTranferQr = async () => {
     try {
-    
       const postPayment = await axios.post(
         `https://boring-wiles.202-92-7-204.plesk.page/api/Payment?amout=${
           Number(localStorage.getItem("priceTrip")) *
           Number(localStorage.getItem("quantity"))
-        }&description=${profile?.username}${randomCode}&codePayment=${randomCode}&ticketID=${ticketId}&typePayment=1&email=${
+        }&description=${
+          profile?.username
+        }${randomCode}&codePayment=${randomCode}&ticketID=${ticketId}&typePayment=1&email=${
           profile?.email
         }`,
         null,
@@ -121,13 +122,20 @@ const Bookingconfirmation = () => {
       }, 1500);
       console.log(postPayment, "postPayment");
     } catch (error) {
-      //
       message.error("Thanh toán thất bại !");
       setTimeout(() => {
         navigate("/");
       }, 1500);
     }
   };
+
+  const handlePaymentChange = (event) => {
+    setSelectedPayment(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(selectedPayment);
+  }, [selectedPayment]);
   return (
     <div>
       <Header />
@@ -213,7 +221,9 @@ const Bookingconfirmation = () => {
                       }`}
                     >
                       <img
-                        src={discount?.imagePromotion}
+                        src={
+                          "https://statics.oeg.vn/storage/pay-gate/visa-mastercard-ico.png"
+                        }
                         alt="Discount image"
                         className="w-12 h-12 mr-4"
                       />
@@ -236,13 +246,13 @@ const Bookingconfirmation = () => {
                 </div>
               </div>
               <h2 className="text-xl font-semibold mb-4">Tạm tính</h2>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 giá : {Number(localStorage.getItem("priceTrip"))}đ
               </div>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 số lượng : x {Number(localStorage.getItem("quantity"))}
               </div>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 {Number(localStorage.getItem("priceTrip")) *
                   Number(localStorage.getItem("quantity"))}
                 đ
@@ -258,7 +268,15 @@ const Bookingconfirmation = () => {
           <div className="col-span-2 bg-white p-4 rounded shadow">
             <h2 className="text-xl font-bold mb-4">Phương thức thanh toán</h2>
             <div className="mb-4">
-              <input type="radio" id="qr" name="payment" className="mr-2" />
+              <input
+                type="radio"
+                id="qr-code"
+                name="payment"
+                value="qr-code"
+                className="mr-2"
+                checked={selectedPayment === "qr-code"}
+                onChange={handlePaymentChange}
+              />
               <label htmlFor="qr" className="font-bold">
                 QR chuyển khoản/ Ví điện tử
               </label>
@@ -313,7 +331,10 @@ const Bookingconfirmation = () => {
                 type="radio"
                 id="pay-on-bus"
                 name="payment"
+                value="pay-on-bus"
                 className="mr-2"
+                checked={selectedPayment === "pay-on-bus"}
+                onChange={handlePaymentChange}
               />
               <label htmlFor="pay-on-bus" className="font-bold">
                 Thanh toán khi lên xe
@@ -323,7 +344,15 @@ const Bookingconfirmation = () => {
               </p>
             </div>
             <div className="mb-4">
-              <input type="radio" id="momo" name="payment" className="mr-2" />
+              <input
+                type="radio"
+                id="momo"
+                name="payment"
+                value="momo"
+                className="mr-2"
+                checked={selectedPayment === "momo"}
+                onChange={handlePaymentChange}
+              />
               <label htmlFor="momo" className="font-bold">
                 Ví MoMo
               </label>
@@ -344,7 +373,10 @@ const Bookingconfirmation = () => {
                 type="radio"
                 id="international-card"
                 name="payment"
+                value="international-card"
                 className="mr-2"
+                checked={selectedPayment === "international-card"}
+                onChange={handlePaymentChange}
               />
               <label htmlFor="international-card" className="font-bold">
                 Thẻ thanh toán quốc tế

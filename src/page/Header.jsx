@@ -161,7 +161,7 @@ const Header = ({ setOpenLogin }) => {
                             <Link
                               to="/profile"
                               onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3.5 pb-3 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base !text-black font-bold"
+                              className="flex items-center gap-3.5 pb-3 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base !text-black"
                             >
                               <span className="!text-black font-bold">
                                 <svg

@@ -1,12 +1,12 @@
 import { Tabs } from "antd";
 import React from "react";
 import {
+  getCountSeatDetailsById,
   getEndTripDetailsById,
   getStartTripDetailsById,
   getTripDetailsById,
-  getCountSeatDetailsById,
 } from "../../../../stores/BookingCar/action";
-import { useAppDispatch } from "../../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
 import { ImageGallery } from "./ImageGallery";
 import OptionTrip from "./OptionTrip";
 import { PickupDropInfo } from "./PickupDropInfo";
@@ -23,6 +23,7 @@ export const TripCard = ({
 }) => {
   const dispatch = useAppDispatch();
   const [showOptionTrip, setShowOptionTrip] = React.useState(false);
+  const DateTripStaion = useAppSelector((state) => state?.trips?.time);
 
   const handleOpenDetailsTrip = (id, index) => {
     if (activeCardIndex !== index) {
@@ -55,7 +56,9 @@ export const TripCard = ({
       await Promise.all([
         dispatch(getStartTripDetailsById({ id: data?.id })),
         dispatch(getEndTripDetailsById({ id: data?.id })),
-        dispatch(getCountSeatDetailsById({ id: data?.id })),
+        dispatch(
+          getCountSeatDetailsById({ id: data?.id, dateTime: DateTripStaion })
+        ),
       ]);
     } catch (error) {
       console.error("Error fetching trip details:", error);

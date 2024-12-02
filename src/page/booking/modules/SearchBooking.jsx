@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { options } from "../../../mock/location";
 import {
@@ -69,6 +70,15 @@ export default function SearchBooking() {
   };
 
   const handleSearch = () => {
+    if (!fromInputValue || !toInputValue || !dateTime) {
+      return message.error("Vui lòng chọn điểm xuat phat, dich va thoi gian");
+    }
+
+    const currentTime = new Date();
+    if (new Date(dateTime).getTime() < currentTime.getTime()) {
+      return message.error("Thoi gian khong hop le");
+    }
+
     dispatch(setStartPoint(fromInputValue));
     dispatch(setEndPoint(toInputValue));
     dispatch(setTime(dateTime));

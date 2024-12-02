@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../../stores/hooks";
@@ -5,9 +6,14 @@ import { useAppSelector } from "../../../../stores/hooks";
 export default function OptionTrip({ data }) {
   const startPointArr = useAppSelector((state) => state.trips?.startPointArr);
   const endPointArr = useAppSelector((state) => state.trips?.endPointArr);
+  const countSeat = useAppSelector((state) => state.trips?.countseat);
+  const quantity = localStorage.getItem("quantity");
   const navigate = useNavigate();
 
   const handleTransaction = () => {
+    if (countSeat === 0 || quantity > countSeat) {
+      return message.error("Không còn chỗ trống cho chuyến xe này!");
+    }
     localStorage.setItem("priceTrip", data?.listVehicle[0]?.price);
     navigate("/bookingconfirmation/" + data.id);
   };
@@ -94,7 +100,7 @@ export default function OptionTrip({ data }) {
         </span>
 
         <span className="text-[rgb(72, 72, 72)] mt-2 text-sm font-medium text-right">
-          Còn 29 chỗ
+          Còn {countSeat || 0} chỗ
         </span>
 
         <button
