@@ -1,20 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { message } from "antd";
+import { checkLoginToken } from "../utils";
 
 const DetaillTicket = () => {
+  const { id } = useParams(); // Get the ticket ID from the route
+  const [ticket, setTicket] = useState(null);
+  const [licensePlate, setLicensePlate] = useState("");
+
+  // Fetch ticket details
+  useEffect(() => {
+    const fetchTicketDetails = async () => {
+      try {
+        const { data } = await axios.get(
+          `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/ticketById/${id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + checkLoginToken(),
+            },
+          }
+        );
+        setTicket(data);
+
+        if (data.vehicleId) {
+          // Fetch vehicle details
+          const vehicleResponse = await axios.get(
+            `https://boring-wiles.202-92-7-204.plesk.page/api/Vehicle/getInforVehicle/${data.vehicleId}`,
+            {
+              headers: {
+                Authorization: "Bearer " + checkLoginToken(),
+              },
+            }
+          );
+          setLicensePlate(vehicleResponse.data.licensePlate);
+        }
+      } catch (error) {
+        console.error("Error fetching ticket details:", error);
+        message.error("Không thể tải thông tin vé.");
+      }
+    };
+
+    fetchTicketDetails();
+  }, [id]);
+
+  if (!ticket) {
+    return <div>Loading...</div>;
+  }
+
+  const paymentStatus =
+    ticket.typeOfPayment === 1 ? "Đã thanh toán" : "Chưa thanh toán";
+
   return (
     <div style={{ backgroundColor: "#1365af", padding: "15px 5px 15px" }}>
       <div
         style={{
           maxWidth: 600,
           margin: "0 auto",
-          fontFamily: "Arial,sans-serif",
+          fontFamily: "Arial, sans-serif",
         }}
       >
         <div style={{ backgroundColor: "#fff" }}>
           <div
             style={{
               padding: "10px 25px",
-              fontFamily: "arial,sans-serif",
+              fontFamily: "Arial, sans-serif",
               fontSize: 14,
               lineHeight: 24,
             }}
@@ -40,11 +90,9 @@ const DetaillTicket = () => {
                       <td style={{ width: "100%" }}>
                         <div style={{ float: "left", padding: 5 }}>
                           <img
-                            src="https://ci3.googleusercontent.com/meips/ADKq_NYAsOOUZ-jqJqOMbvpE92idnOp7wLn3PtJRLspy-MEzzqVT9Fi6If5JXMt6WMkmxaUpyVDhvhiaWc0w6sqt9w=s0-d-e1-ft#https://static.vexere.com/images/logo.jpg"
+                            src="https://static.vexere.com/images/logo.jpg"
                             alt="vexere.com"
                             height="40px"
-                            className="CToWUd"
-                            data-bit="iit"
                           />
                         </div>
                         <div
@@ -59,7 +107,7 @@ const DetaillTicket = () => {
                           }}
                         >
                           <span>MÃ VÉ:</span>{" "}
-                          <span style={{ color: "#fdb813" }}>OCL991</span>
+                          <span style={{ color: "#fdb813" }}>{id}</span>
                         </div>
                       </td>
                     </tr>
@@ -85,7 +133,7 @@ const DetaillTicket = () => {
                       fontSize: 13,
                       color: "#000",
                       lineHeight: 20,
-                      fontFamily: "Arial,sans-serif",
+                      fontFamily: "Arial, sans-serif",
                     }}
                   >
                     <tbody>
@@ -98,10 +146,7 @@ const DetaillTicket = () => {
                       <tr>
                         <td style={{ width: "35%", padding: 5 }}>Điểm đón:</td>
                         <td style={{ width: "65%", padding: 5 }}>
-                          <b>Khuất Duy Tiến</b>
-                          <br />
-                          166, 168 Khuất Duy Tiến, Thanh Xuân, Hà Nội
-                          <b />
+                          <b>{ticket.pointStart}</b>
                         </td>
                       </tr>
                       <tr>
@@ -109,32 +154,33 @@ const DetaillTicket = () => {
                           Giờ đón (dự kiến):
                         </td>
                         <td style={{ width: "65%", padding: 5 }}>
-                          <b>13:30 ngày 20/10/2018</b>
+                          <b>{new Date(ticket.timeFrom).toLocaleString()}</b>
                         </td>
                       </tr>
                       <tr>
                         <td style={{ width: "35%", padding: 5 }}>Điểm trả:</td>
                         <td style={{ width: "65%", padding: 5 }}>
-                          <b>Nam Định</b>
-                          <br />
-                          08 Trần Anh Tông, QL 10, P. Lộc Vượng, Nam Định, Nam
-                          Định
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style={{ width: "35%", padding: 5 }}>
-                          Số ghế/giường:
-                        </td>
-                        <td style={{ width: "65%", padding: 5 }}>
-                          <strong>6</strong>
+                          <b>{ticket.pointEnd}</b>
                         </td>
                       </tr>
                       <tr>
                         <td style={{ width: "35%", padding: 5 }}>Tuyến:</td>
                         <td style={{ width: "65%", padding: 5 }}>
-                          <b>Cầu Giấy - Nam Định</b>
-                          <br />
-                          (xuất phát 13:30 ngày 20/10/2018)
+                          <b>{ticket.description}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ width: "35%", padding: 5 }}>Ghi chú:</td>
+                        <td style={{ width: "65%", padding: 5 }}>
+                          {ticket.note}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ width: "35%", padding: 5 }}>
+                          Biển số xe:
+                        </td>
+                        <td style={{ width: "65%", padding: 5 }}>
+                          {licensePlate || "Đang tải..."}
                         </td>
                       </tr>
                       <tr style={{ fontSize: 16, fontWeight: "bold" }}>
@@ -154,70 +200,15 @@ const DetaillTicket = () => {
                             color: "#fd8017",
                           }}
                         >
-                          100.000 VND
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <hr />
-                  <h3
-                    style={{
-                      fontSize: "1.7em",
-                      color: "#1e62a3",
-                      textAlign: "center",
-                      margin: "10px 0",
-                    }}
-                  >
-                    Thông tin hành khách
-                  </h3>
-                  <table
-                    style={{
-                      width: "100%",
-                      verticalAlign: "text-top",
-                      fontSize: 13,
-                      color: "#000",
-                      lineHeight: 15,
-                    }}
-                  >
-                    <tbody>
-                      <tr>
-                        <td style={{ width: "35%", padding: 5 }}>Họ tên:</td>
-                        <td style={{ width: "65%", padding: 5 }}>
-                          <b>LE QUOC HUNG</b>
+                          {ticket.pricePromotion.toLocaleString()} VND
                         </td>
                       </tr>
                       <tr>
                         <td style={{ width: "35%", padding: 5 }}>
-                          Điện thoại:
+                          Trạng thái thanh toán:
                         </td>
                         <td style={{ width: "65%", padding: 5 }}>
-                          <b>0966889786</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style={{ width: "35%", padding: 5 }}>
-                          Hình thức T.T:
-                        </td>
-                        <td style={{ width: "65%", padding: 5 }}>
-                          <b>Tại đại lý</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td
-                          colSpan={2}
-                          style={{
-                            width: "100%",
-                            padding: "10px 5px",
-                            textAlign: "center",
-                          }}
-                        >
-                          <img
-                            src="https://ci3.googleusercontent.com/meips/ADKq_NZg4kMOo6qYPjqINxie_RCZD_S_b5h0WTD1P5VSJovy40m_U4WIj_FpgWSh9BEZMSQlAslzAL2h9upZw-0DHLHWbhK-Ag=s0-d-e1-ft#https://static.vexere.com/images/paid-stamp.png"
-                            alt="đã thanh toán"
-                            width="184px"
-                            className="CToWUd"
-                            data-bit="iit"
-                          />
+                          {paymentStatus}
                         </td>
                       </tr>
                     </tbody>
@@ -243,7 +234,10 @@ const DetaillTicket = () => {
                           <span>Hotline: 1900 969681</span>
                         </div>
                         <div style={{ float: "right" }}>
-                          <span>E-Ticket - Vexere.com (00:00 20/10/2018)</span>
+                          <span>
+                            E-Ticket - Vexere.com (
+                            {new Date().toLocaleString()})
+                          </span>
                         </div>
                       </td>
                     </tr>
@@ -252,107 +246,7 @@ const DetaillTicket = () => {
               </div>
             </div>
           </div>
-          <div>
-            <img
-              src="https://ci3.googleusercontent.com/meips/ADKq_NZa5q1i1-0E5fQ7_WCN6ThOUM29iy8CKshCv76tUYX5iWqWmv4I00_0Bo9DHmEdsf6qNeBlXvT3asoRs96aOX8vZw=s0-d-e1-ft#https://static.vexere.com/images/divider.png"
-              alt="divider"
-              width="100%"
-              style={{ maxHeight: 40 }}
-              className="CToWUd"
-              data-bit="iit"
-            />
-          </div>
-          <div
-            style={{
-              padding: "10px 25px",
-              fontSize: 12,
-              textAlign: "justify",
-              color: "#000",
-            }}
-          >
-            <p style={{ margin: "5px 0" }}>
-              <a
-                href="https://vexere.com"
-                target="_blank"
-                data-saferedirecturl="https://www.google.com/url?q=https://vexere.com&source=gmail&ust=1731591293150000&usg=AOvVaw3HHuhzbepT47t6MgSwQwNt"
-              >
-                VeXeRe.com
-              </a>
-              xin cảm ơn quý khách và rất mong sẽ được phục vụ mọi nhu cầu mua
-              vé xe của quý khách trong tương lai. Quý khách vui lòng đọc kĩ quy
-              chế của VeXeRe.com
-              <a
-                href="https://vexere.com/vi-VN/quy-che.html"
-                target="_blank"
-                data-saferedirecturl="https://www.google.com/url?q=https://vexere.com/vi-VN/quy-che.html&source=gmail&ust=1731591293150000&usg=AOvVaw3TCBezHt8FObVZdtOeX-Gz"
-              >
-                tại đây
-              </a>{" "}
-              trường hợp cần được hỗ trợ trực tiếp về các vấn đề huỷ vé, đổi vé,
-              huỷ chuyến,... xin vui lòng liên hệ dịch vụ chăm sóc khách hàng
-              của chúng tôi:
-            </p>
-            <div style={{ paddingLeft: 15 }}>
-              <b>Công ty cổ phần VeXeRe.com:</b>
-              <br />
-              <ol style={{ margin: "5px 0" }}>
-                <li>
-                  <span>
-                    Miền Bắc: P1202, Tòa nhà 101 Láng Hạ, Quận Đống Đa, Hà Nội.
-                  </span>
-                  <br />
-                  <span>
-                    Giờ làm việc:{" "}
-                    <b>
-                      Thứ hai đến Thứ sáu: 8:30 - 18:00; Thứ bảy: 8:30 - 12:00
-                    </b>
-                  </span>
-                  <span>
-                    Hotline:{" "}
-                    <a href="tel:1900%207075" target="_blank">
-                      1900 7075
-                    </a>
-                  </span>
-                </li>
-                <li>
-                  <span>
-                    Miền Nam: Tầng M, Khu B, Tòa nhà Sài Gòn Town, 83/16 Thoại
-                    Ngọc Hầu, Phường Hòa Thạnh, Quận Tân Phú, TP. Hồ Chí Minh.
-                  </span>
-                  <br />
-                  <span>
-                    Giờ làm việc:{" "}
-                    <b>
-                      Thứ hai đến Thứ sáu: 8:30 - 18:00; Thứ bảy: 8:30 - 12:00
-                    </b>
-                  </span>
-                  <span>
-                    Hotline:{" "}
-                    <a href="tel:1900%207070" target="_blank">
-                      1900 7070
-                    </a>{" "}
-                    -{" "}
-                    <a href="tel:1900%20969681" target="_blank">
-                      1900 969681
-                    </a>
-                  </span>
-                </li>
-              </ol>
-              Email:{" "}
-              <a href="mailto:cs@vexere.com" target="_blank">
-                cs@vexere.com
-              </a>
-              <div className="yj6qo" />
-              <div className="adL">
-                {" "}
-                <br />
-              </div>
-            </div>
-            <div className="adL"></div>
-          </div>
-          <div className="adL"></div>
         </div>
-        <div className="adL"></div>
       </div>
     </div>
   );

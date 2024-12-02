@@ -6,6 +6,7 @@ import Convenient from "./page/Convenient";
 import DefaultLayout from "./page/DefaultLayout";
 import DetaillTicket from "./page/DetaillTicket";
 import Home from "./page/Home";
+import ForgotPassword from "./page/Forgotpassword";
 import PaymentMethod from "./page/PaymentMethod";
 import RenterCar from "./page/RenterCar";
 import HistoryRentDriver from "./page/admin/HistoryRentDriver/HistoryRentDriver";
@@ -46,6 +47,10 @@ export default function useRouteElements() {
           Page not found!
         </div>
       ),
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
     },
     {
       path: "/profile",

@@ -704,29 +704,14 @@ const Home = () => {
           <div className="homepage__BannerWrapper-bs2n93-0 jwkRox">
             <img
               className="homepage__Banner-bs2n93-1 joyfbP banner-img-pc"
-              src="https:////static.vexere.com/production/banners/1209/LEADER-BOARD-(1).png"
+              src="https://i.imgur.com/LVM6HVU.png"
               alt="Đặt vé xe limousine của 1000+ hãng xe VIP đi toàn quốc"
             />
             <div className="homepage__BodyBanner-bs2n93-2 eXlcQb">
               <div className="homepage__ContentWrapper-bs2n93-3 dAuOqb">
                 <a rel="noreferrer" className="title-container">
-                  <p className="base__Heading02-sc-1tvbuqk-5 dVxeQY color--white slogan-text">
-                    Vexere - Cam kết hoàn 150% nếu nhà xe không cung cấp dịch vụ
-                    vận chuyển
-                  </p>
-                  <div className="PostfixGuarantee__Container-sc-1ufm1gd-0 lcGNeg">
-                    <p className="base__Heading02-sc-1tvbuqk-5 dVxeQY color--white star-container">
-                      (
-                    </p>
-                    <div className="color--vex-yellow">*</div>)<p />
-                    <div className="color--vex-yellow">
-                      <div className="material-icons-wrapper md-24  ">
-                        <i className="material-icons-outlined color--vex-yellow">
-                          info
-                        </i>
-                      </div>
-                    </div>
-                  </div>
+                
+         
                 </a>
                 <div className="TransportationWidgetTab__SearchBase-sc-1a4o00m-0 bftUFJ">
                   <div className="TransportationWidgetTab__SearchWrapper-sc-1a4o00m-1 iMFHbv">
@@ -809,38 +794,7 @@ const Home = () => {
                                       </Link>
                                     </span>
                                   </div>
-                                  <div
-                                    role="tab"
-                                    aria-disabled="false"
-                                    aria-selected="false"
-                                    className=" ant-tabs-tab"
-                                  >
-                                    <span className="TransportationWidgetTab__TabLabelContainer-sc-1a4o00m-6 dhuMWw">
-                                      <div
-                                        style={{
-                                          background: "none",
-                                          marginLeft: 0,
-                                        }}
-                                        className="TransportationWidgetTab__IconWrapper-sc-1a4o00m-4 cnqXqt"
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width={24}
-                                          height={24}
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                        >
-                                          <path d="M22 16v-2l-8.421-5V3.5c0-.83-.705-1.5-1.579-1.5s-1.579.67-1.579 1.5V9L2 14v2l8.421-2.5V19l-2.105 1.5V22L12 21l3.684 1v-1.5L13.58 19v-5.5L22 16z"></path>
-                                        </svg>
-                                      </div>
-                                      <span className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp">
-                                        Máy bay
-                                      </span>
-                                      <span className="TransportationWidgetTab__NewLabel-sc-1a4o00m-11 dugVQY">
-                                        -20K
-                                      </span>
-                                    </span>
-                                  </div>
+                          
                                   <div
                                     role="tab"
                                     aria-disabled="false"
@@ -868,9 +822,12 @@ const Home = () => {
                                           ></path>
                                         </svg>
                                       </div>
-                                      <span className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp">
-                                        Tàu hỏa
-                                      </span>
+                                      <Link
+                                        to="/Convenient"
+                                        className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp"
+                                      >
+                                        Xe Tiện Chuyến
+                                      </Link>
                                       <span className="TransportationWidgetTab__NewLabel-sc-1a4o00m-11 duhJHP">
                                         Vé Tết
                                       </span>
@@ -905,9 +862,12 @@ const Home = () => {
                                           </g>
                                         </svg>
                                       </div>
-                                      <span className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp">
-                                        Thuê xe
-                                      </span>
+                                      <Link
+                                        to="/renter"
+                                        className="TransportationWidgetTab__LabelWrapper-sc-1a4o00m-5 gPyyp"
+                                      >
+                                        Thuê xe du lịch
+                                      </Link>
                                       <span className="TransportationWidgetTab__NewLabel-sc-1a4o00m-11 dugVQY">
                                         Mới
                                       </span>

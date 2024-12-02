@@ -18,33 +18,17 @@ const Header = ({ setOpenLogin }) => {
           <div className="logo">
             <Link to="/">
               <img
-                src="https://storage.googleapis.com/fe-production/svgIcon/icon_vxr_full_2.svg"
+                src="https://i.imgur.com/qLCRwkv.png"
                 alt="logo"
               />
             </Link>
           </div>
-          <a
-            className="rtb"
-            href="/vi-VN/nhung-cau-hoi-thuong-gap.html"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Cam kết hoàn 150% nếu nhà xe <br /> không cung cấp dịch vụ vận
-            chuyển (*)
-            <div className="material-icons-wrapper md-16">
-              <i
-                className="material-icons-outlined"
-                style={{ fontWeight: 700 }}
-              >
-                info
-              </i>
-            </div>
-          </a>
+ 
         </div>
         <ul className="header-right ">
           <li className="Navbar2__GroupItem-sa2air-7 fnjukq menu-group-item">
             <a
-              href="/vi-VN/ve-cua-toi"
+              href="/profile/my-order"
               className="Navbar2__LinkNormalStyled-sa2air-5 chCbIo"
             >
               Đơn hàng của tôi
@@ -59,18 +43,7 @@ const Header = ({ setOpenLogin }) => {
             </NavLink>
           </li>
           <li className="Navbar2__GroupItem-sa2air-7 fnjukq menu-group-item ant-dropdown-trigger">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              className="Navbar2__MenuItem-sa2air-6 uhmcm"
-            >
-              Trở thành đối tác
-              <div className="material-icons-wrapper md-16  ">
-                <i className="material-icons-outlined dropdown-icon">
-                  arrow_drop_down
-                </i>
-              </div>
-            </a>
+
           </li>
           <div className="fix-item">
             <li className="Navbar2__GroupItem-sa2air-7 fnjukq menu-group-item">

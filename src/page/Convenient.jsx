@@ -12,14 +12,16 @@ const Convenient = () => {
   const [dataDetail, setDataDetail] = useState({
     startPoint: "Ha Noi",
     endPoint: "Bac Giang",
+    startTime: "",
   });
-  const [price, setPrice] = useState(null); // Giá gốc
-  const [finalPrice, setFinalPrice] = useState(null); // Giá sau khuyến mãi
+  const [price, setPrice] = useState(null); // Original price (Giá 1)
+  const [finalPrice, setFinalPrice] = useState(null); // Discounted price (Giá 2)
   const [selectedService, setSelectedService] = useState("ConvenientTrip");
-  const [promotions, setPromotions] = useState([]); // Danh sách khuyến mãi
-  const [selectedPromotion, setSelectedPromotion] = useState(null); // Khuyến mãi được chọn
+  const [promotions, setPromotions] = useState([]); // List of promotions
+  const [selectedPromotion, setSelectedPromotion] = useState(null); // Selected promotion
+  const [phoneNumber, setPhoneNumber] = useState(profile?.numberPhone || "");
 
-  // Fetch promotions khi component mount
+  // Fetch promotions on component mount
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
@@ -45,13 +47,9 @@ const Convenient = () => {
     fetchPromotions();
   }, []);
 
-  // Gọi API để lấy giá khi dịch vụ hoặc điểm đi/đến thay đổi
-  useEffect(() => {
+  // Fetch the price for the trip
+  const handelBookTrip = async () => {
     const tripType = selectedService === "ConvenientTrip" ? 2 : 3;
-    handelBookTrip(tripType);
-  }, [selectedService, dataDetail.startPoint, dataDetail.endPoint]);
-
-  const handelBookTrip = async (tripType) => {
     try {
       const { data } = await axios.get(
         `https://boring-wiles.202-92-7-204.plesk.page/api/Trip/searchTripForConvenient/${dataDetail.startPoint}/${dataDetail.endPoint}/${tripType}`,
@@ -64,7 +62,7 @@ const Convenient = () => {
 
       if (data?.price) {
         setPrice(data.price);
-        setFinalPrice(data.price); // Giá ban đầu và giá sau khuyến mãi đều là giá gốc
+        setFinalPrice(null); // Reset final price when fetching a new trip
         message.success("Đã cập nhật giá chuyến đi.");
       }
     } catch (error) {
@@ -73,7 +71,13 @@ const Convenient = () => {
     }
   };
 
+  // Apply promotion to calculate the final price
   const handleApplyPromotion = () => {
+    if (!price) {
+      message.warning("Vui lòng kiểm tra giá trước khi áp dụng khuyến mãi.");
+      return;
+    }
+
     if (selectedPromotion) {
       const selectedPromo = promotions.find(
         (promo) => promo.codePromotion === selectedPromotion
@@ -84,29 +88,34 @@ const Convenient = () => {
         return;
       }
 
-      // Tính giá sau khuyến mãi
       const discount = selectedPromo.discount || 0;
       const discountedPrice = price - (price * discount) / 100;
       setFinalPrice(discountedPrice);
 
       message.success(`Khuyến mãi đã áp dụng: ${selectedPromo.description}`);
     } else {
-      setFinalPrice(price); // Nếu không chọn khuyến mãi, giữ nguyên giá gốc
+      setFinalPrice(price); // If no promotion is selected, use the original price
       message.info("Không áp dụng khuyến mãi.");
     }
   };
 
+  // Handle trip booking
   const handelResult = async () => {
+    if (!finalPrice) {
+      message.warning("Vui lòng áp dụng khuyến mãi trước khi đặt xe.");
+      return;
+    }
+
     try {
       const dataPayload = {
         userName: profile?.username,
-        startTime: dataDetail?.timer,
+        startTime: dataDetail?.startTime,
         price: finalPrice,
         pointStart: dataDetail?.startPoint,
         pointEnd: dataDetail?.endPoint,
         pickUpPoint: dataDetail?.pickUpPoint,
         dropOffPoint: dataDetail?.dropOffPoint,
-        phoneNumber: profile?.numberPhone,
+        phoneNumber: phoneNumber,
         typeOfTrip: selectedService === "ConvenientTrip" ? 2 : 3,
       };
       await axios.post(
@@ -123,7 +132,7 @@ const Convenient = () => {
         window.location.href = "/";
       }, 500);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       message.error("Thất bại , vui lòng thử lại !");
     }
   };
@@ -182,7 +191,39 @@ const Convenient = () => {
                   className="w-full p-2 border rounded"
                 />
               </div>
-
+              <div className="mb-4">
+                <label>Thời gian</label>
+                <input
+                  type="datetime-local"
+                  value={dataDetail.startTime}
+                  onChange={(e) =>
+                    setDataDetail({ ...dataDetail, startTime: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label>Số điện thoại</label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <button
+                  onClick={handelBookTrip}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-full"
+                >
+                  Tìm vé
+                </button>
+              </div>
+              {price !== null && (
+                <div className="mb-4">
+                  <p>Giá gốc: {`${price}đ`}</p>
+                </div>
+              )}
               <div className="mb-4">
                 <label>Chọn khuyến mãi</label>
                 <select
@@ -192,7 +233,10 @@ const Convenient = () => {
                 >
                   <option value="">-- Chọn khuyến mãi --</option>
                   {promotions.map((promo) => (
-                    <option key={promo.codePromotion} value={promo.codePromotion}>
+                    <option
+                      key={promo.codePromotion}
+                      value={promo.codePromotion}
+                    >
                       {promo.codePromotion} - Giảm {promo.discount}%
                     </option>
                   ))}
@@ -204,18 +248,20 @@ const Convenient = () => {
                   Áp dụng khuyến mãi
                 </button>
               </div>
-              <div className="mb-4">
-                <p>Giá gốc: {price ? `${price}đ` : "Đang tải..."}</p>
-                <p>Giá sau khuyến mãi: {finalPrice ? `${finalPrice}đ` : "Đang áp dụng..."}</p>
-              </div>
+              {finalPrice !== null && (
+                <div className="mb-4">
+                  <p>
+                    Giá gốc:{" "}
+                    <span className="line-through text-gray-500">{`${price}đ`}</span>
+                  </p>
+                  <p>
+                    Giá sau khuyến mãi:{" "}
+                    <span className="text-green-500">{`${finalPrice}đ`}</span>
+                  </p>
+                </div>
+              )}
               <button
-                onClick={() => {
-                  if (!price) {
-                    message.warning("Vui lòng kiểm tra giá trước khi đặt xe.");
-                    return;
-                  }
-                  handelResult();
-                }}
+                onClick={handelResult}
                 className="bg-green-500 text-white py-2 px-4 rounded-full w-full"
               >
                 ĐẶT XE NGAY

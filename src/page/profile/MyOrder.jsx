@@ -1,29 +1,47 @@
 import { Button, Table } from "antd";
 import React, { useEffect, useState } from "react";
-
+import { checkLoginToken } from "../../utils";
 export default function MyOrder() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const demoData = [
-    {
-      id: "1",
-      description: "Yêu cầu thêm xe mới vào hệ thống",
-      note: "Đang chờ xác nhận từ staff",
-    },
-    {
-      id: "2",
-      description: "Cập nhật thông tin xe số 12",
-      note: "Hoàn tất",
-    },
-    {
-      id: "3",
-      description: "Xóa thông tin xe không còn hoạt động",
-      note: "Đang xử lý",
-    },
-  ];
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/listTicketByUserId",
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + checkLoginToken(),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const result = await response.json();
+
+      // Map API response to table's data structure
+      const formattedData = result.map((item, index) => ({
+        id: index + 1, // Sequential ID
+        description: item.description,
+        note: "Chờ xác nhận", // Assuming note is static as per your example
+      }));
+
+      setData(formattedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setData(demoData);
+    fetchData();
   }, []);
 
   const columns = [
@@ -68,6 +86,7 @@ export default function MyOrder() {
         dataSource={data}
         columns={columns}
         rowKey="id"
+        loading={loading}
         pagination={{ pageSize: 5 }}
       />
     </>
