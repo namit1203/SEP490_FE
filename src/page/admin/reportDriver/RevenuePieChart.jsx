@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Pie } from '@ant-design/charts';
 
-const RevenuePieChart = ({ data }) => {
+const RevenuePieChart = ({data}) => {
   const [chartData, setChartData] = useState([]);
 
-  console.log(`data đã truyền qua: ${data}`)
+ console.log(`data đã truyền qua: ${data}`)
 
   useEffect(() => {
     if (data) {
@@ -15,6 +15,7 @@ const RevenuePieChart = ({ data }) => {
   }, [data]);
 
   const config = {
+    forceFit : true ,
     appendPadding: 10,
     data: chartData,
     angleField: 'value',
@@ -22,7 +23,8 @@ const RevenuePieChart = ({ data }) => {
     radius: 1,
     innerRadius: 0.6,
     label: {
-      type: 'outer',
+      visible : true , 
+      type: 'inner',
       content: '{name} ({percentage})',
     },
     interactions: [{ type: 'element-active' }],

@@ -1,40 +1,60 @@
 import React, { useState, useEffect } from 'react'
-import { Breadcrumb, Card, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Row, Table, Tag } from "antd";
 import RevenuePieChart from './RevenuePieChart';
 import axios from "axios";
+import { checkLoginToken } from '../../../utils';
 
 const ReportDriver = () => {
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     // Giả lập API
     const fetchData = async () => {
-      const storedData = localStorage.getItem('token'); // Lấy dữ liệu từ localStorage
-      //const parsedData = storedData ? JSON.parse(storedData) : null; // Parse dữ liệu nếu không null
-      // Dùng tạm vì chưa đăng nhập được
-      const parsedData = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImR1Y2xpbmg1MTIyMDAyMjJAZ21haWwuY29tIiwiSUQiOiIyIiwicm9sZSI6IlN0YWZmIiwibmJmIjoxNzMzMTM5ODY1LCJleHAiOjE3MzMxNDE2NjUsImlhdCI6MTczMzEzOTg2NSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo3MTI0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozMDAzIn0.IZHsHbJi4mB1dtV0xwxvOcOk-k9pYHeSlTLnYu-5jJQ'
-      
+ 
       console.log(`Gọi API nè`)
       try{
       const apiData = await axios.get(
         "https://boring-wiles.202-92-7-204.plesk.page/api/HistoryRentDriver/rent-details-with-total-for-owner?startDate=2024-01-01&endDate=2024-11-26&vehicleId=1&vehicleOwnerId=1",
         {
           headers: {
-            'Authorization': `Bearer ${parsedData}`
+            'Authorization': 'Bearer ' + checkLoginToken() 
           },
         }
       );
-      console.log(`${JSON.stringify(apiData.data)}`)
-      setData(JSON.stringify(apiData.data));
+      console.log(`${JSON.stringify(apiData.data.paymentRentDriverDTOs)}`)
+      setData(apiData.data);
+      console.log(data.paymentRentDriverDTOs?.length)
       }catch(error){
         console.error("Lỗi khi gọi API:", error.response ? error.response.data : error.message);
       }
-    //  const apiData = {"paymentRentDriverDTOs":[{"driverName":"string","licenseVehicle":"98B-00968","price":900000,"createdAt":"2024-11-05T07:30:00"},{"driverName":"Trần Thị B","licenseVehicle":"98B-00968","price":950000,"createdAt":"2024-11-06T08:30:00"},{"driverName":"Lê Văn C","licenseVehicle":"98B-00977","price":1000000,"createdAt":"2024-11-07T09:30:00"},{"driverName":"Phạm Thị D","licenseVehicle":"98B-00216","price":1100000,"createdAt":"2024-11-08T10:30:00"},{"driverName":"Trần Thị B","licenseVehicle":null,"price":110,"createdAt":"2024-11-25T13:43:29.55"}],"total":3950110}
-      setData(JSON.stringify(apiData.data));
     };
     fetchData();
   }, []);
+
+  const dataSource = data?.paymentRentDriverDTOs?.map((item, index) => ({
+    driverName: item?.driverName, // Lấy giá trị từ driverName trong data
+    licenseVehicle: <Tag color='green'>{item?.licenseVehicle}</Tag>, // Lấy giá trị từ licenseVehicle
+    price: item?.price, // Lấy giá trị từ price
+  }));
+  
+  const columns = [
+    {
+      title: 'Tên tài xế',
+      dataIndex: 'driverName',
+      key: 'driverName',
+    },
+    {
+      title: 'Biển số',
+      dataIndex: 'licenseVehicle',
+      key: 'licenseVehicle',
+    },
+    {
+      title: 'Số tiền',
+      dataIndex: 'price',
+      key: 'price',
+    },
+  ];
 
   return (
    <>
@@ -42,29 +62,34 @@ const ReportDriver = () => {
    <div className='my-5'>
    <Row gutter={16}>
     <Col span={8}>
-      <Card title="Tổng Tiền" bordered={false}>
-      ${data.total}
+      <Card title="Tổng Tiền" className='color-primary'>
+      {data?.total}
       </Card>
     </Col>
     <Col span={8}>
-      <Card title="Tổng Số Tài Xế" bordered={false}>
-        10
+      <Card title="Tổng Số Tài Xế" >
+      {data.paymentRentDriverDTOs?.length}
       </Card>
     </Col>
     <Col span={8}>
-      <Card title="Card title" bordered={false}>
-        Card content
+      <Card title="Trung bình một tài xế" >
+      {data?.total / data?.paymentRentDriverDTOs?.length}
       </Card>
     </Col>
   </Row>
    </div>
    <div style={{ width: '600px', margin: '0 auto' }}>
-      <h1 className='text-center'>Biểu đồ Doanh Thu</h1>
+      <h1 className='text-center'>Báo cáo thống kê thuê tài xế</h1>
       {data ? <RevenuePieChart data={data.paymentRentDriverDTOs} /> : <p className='text-center'>Đang tải dữ liệu...</p>}
+       {/* <RevenuePieChart data={datatest} />  */}
     </div>
-
+<div>
+<Table dataSource={dataSource} columns={columns} />
+</div>
    </>
   )
 }
 
 export default ReportDriver
+
+
