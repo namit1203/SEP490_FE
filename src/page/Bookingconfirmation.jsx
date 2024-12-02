@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import Header from "./Header";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { checkLoginToken } from "../utils";
-import { AppContext } from "../context/app.context";
 import { message } from "antd";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AppContext } from "../context/app.context";
+import { checkLoginToken } from "../utils";
 import CountdownTimer from "./CountdownTimer";
+import Header from "./Header";
 
 const Bookingconfirmation = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Bookingconfirmation = () => {
   const [promotionId, setPromotionId] = useState([]);
   const [ticketId, setTicketId] = useState(null);
   const [randomCode, setRandomCode] = useState(null);
-
+  const quantity = localStorage.getItem("quantity");
   const [countDown, setCountDown] = useState(false);
   const [checkSelectPromtion, setCheckSelectPromtion] = useState(null);
   const [checkQr, setCheckQr] = useState(false);
@@ -36,7 +36,8 @@ const Bookingconfirmation = () => {
   };
   const handelFetchDataTipDetails = async () => {
     const { data } = await axios.get(
-      "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" + id,
+      "https://boring-wiles.202-92-7-204.plesk.page/api/TripDetails/tripId?TripId=" +
+        id,
       {
         headers: {
           Authorization: "Bearer " + checkLoginToken(),
@@ -58,7 +59,7 @@ const Bookingconfirmation = () => {
         typeOfPayment: 1,
       };
       const response = await axios.post(
-        `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/bookTicket/${id}?promotionCode=${checkSelectPromtion}`,
+        `https://boring-wiles.202-92-7-204.plesk.page/api/Ticket/bookTicket/${id}?promotionCode=${checkSelectPromtion}&numberTicket=${quantity}`,
         dataPayload,
         {
           headers: {
@@ -100,12 +101,13 @@ const Bookingconfirmation = () => {
   const discounts = promotion;
   const handelTranferQr = async () => {
     try {
-    
       const postPayment = await axios.post(
         `https://boring-wiles.202-92-7-204.plesk.page/api/Payment?amout=${
           Number(localStorage.getItem("priceTrip")) *
           Number(localStorage.getItem("quantity"))
-        }&description=${profile?.username}${randomCode}&codePayment=${randomCode}&ticketID=${ticketId}&typePayment=1&email=${
+        }&description=${
+          profile?.username
+        }${randomCode}&codePayment=${randomCode}&ticketID=${ticketId}&typePayment=1&email=${
           profile?.email
         }`,
         null,
@@ -213,7 +215,9 @@ const Bookingconfirmation = () => {
                       }`}
                     >
                       <img
-                        src={discount?.imagePromotion}
+                        src={
+                          "https://statics.oeg.vn/storage/pay-gate/visa-mastercard-ico.png"
+                        }
                         alt="Discount image"
                         className="w-12 h-12 mr-4"
                       />
@@ -236,13 +240,13 @@ const Bookingconfirmation = () => {
                 </div>
               </div>
               <h2 className="text-xl font-semibold mb-4">Tạm tính</h2>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 giá : {Number(localStorage.getItem("priceTrip"))}đ
               </div>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 số lượng : x {Number(localStorage.getItem("quantity"))}
               </div>
-              <div className="text-2xl font-bold text-gray-800">
+              <div className="text-lg font-semibold text-gray-800 capitalize">
                 {Number(localStorage.getItem("priceTrip")) *
                   Number(localStorage.getItem("quantity"))}
                 đ
