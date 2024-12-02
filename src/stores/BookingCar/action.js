@@ -57,12 +57,10 @@ const getEndTripDetailsById = createAsyncThunk(
 
 const getCountSeatDetailsById = createAsyncThunk(
   "trip/countseat",
-  async ({ id }) => {
-    let url = `https://boring-wiles.202-92-7-204.plesk.page/api/Vehicle/getNumberSeatAvaiable/${id}`;
+  async ({ id, dateTime }) => {
+    let url = `https://boring-wiles.202-92-7-204.plesk.page/api/Vehicle/getNumberSeatAvaiable/${id}/${dateTime}`;
 
-    const response = await fetch(url, {
-      credentials: "include",
-    });
+    const response = await fetch(url);
 
     const data = await response.json();
 
