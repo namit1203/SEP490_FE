@@ -32,6 +32,7 @@ import Info from "./page/profile/Info";
 import MyOrder from "./page/profile/MyOrder";
 import Profile from "./page/profile/Profile";
 import RewardPoints from "./page/profile/RewardPoints";
+import ReportDriver from "./page/admin/reportDriver/ReportDriver";
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -97,6 +98,7 @@ export default function useRouteElements() {
         { path: "trip", element: <TripList /> },
         { path: "typeOfDriver", element: <TypeOfDriver /> },
         { path: "listVehicleRent", element: <ListVehicleRent /> },
+        { path: "reportDriver", element: <ReportDriver /> },
       ],
     },
     {

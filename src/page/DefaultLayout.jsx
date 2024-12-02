@@ -92,6 +92,11 @@ const itemsStaff = [
     "listVehicleRent",
     <FileOutlined />
   ),
+  getItem(
+    <NavLink to={`/dashboard/ReportDriver`}>ReportDriver</NavLink>,
+    "reportDriver",
+    <FileOutlined />
+  ),
 ];
 const DefaultLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
