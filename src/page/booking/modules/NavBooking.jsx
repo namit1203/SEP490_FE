@@ -7,9 +7,8 @@ export default function NavBooking() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const menuItems = [
-    { icon: <TripIcons />, label: "130k" },
-    { icon: <PlaneIcons />, label: "Máy bay" },
-    { icon: <StationIcons />, label: "Tàu hỏa" },
+    { icon: <TripIcons />, label: "Xe khách" },
+    
   ];
 
   const handleClick = (index) => {

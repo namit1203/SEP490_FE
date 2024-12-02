@@ -32,6 +32,7 @@ import ChangePassword from "./page/profile/ChangePassword";
 import Info from "./page/profile/Info";
 import MyOrder from "./page/profile/MyOrder";
 import Profile from "./page/profile/Profile";
+import MyPromotion from "./page/profile/MyPromotion";
 import RewardPoints from "./page/profile/RewardPoints";
 
 export default function useRouteElements() {
@@ -60,6 +61,7 @@ export default function useRouteElements() {
         { path: "change-pass", element: <ChangePassword /> },
         { path: "reward-point", element: <RewardPoints /> },
         { path: "my-order", element: <MyOrder /> },
+        { path: "my-promotion", element: <MyPromotion /> },
       ],
     },
     {

@@ -63,37 +63,44 @@ const Bookingconfirmation = () => {
           },
         }
       );
-
-      const { data: randomCodeData } = await axios.get(
-        "https://boring-wiles.202-92-7-204.plesk.page/api/Payment/RandomCode"
-      );
-
+  
+      // Tạo mã randomCode bằng JavaScript
+      const generateRandomCode = () => {
+        const randomNumbers = Math.floor(100000 + Math.random() * 900000); // Tạo mã 6 chữ số
+        return randomNumbers.toString();
+      };
+  
+      const randomCodeGenerated = generateRandomCode();
+  
       setTicketId(response.data.ticketId);
-      setRandomCode(randomCodeData.randomNumbers.result);
-
+      setRandomCode(randomCodeGenerated);
+  
       if (selectedPayment === "pay-on-bus") {
-        return message.success("Thanh toánh thành công");
+        return message.success("Thanh toán thành công");
       }
-
+  
       setCheckQr(true);
     } catch (error) {
       console.log(error);
+      message.error("Đã xảy ra lỗi khi đặt vé");
     }
   };
-
+  
+  
   const getImgSrc = () => {
     const totalAmount =
       Number(localStorage.getItem("priceTrip")) *
       Number(localStorage.getItem("quantity"));
     const accountNameTK = "Le Son Nam";
-    const description = `${profile?.username}${randomCode}`;
+    const descriptionn = `${profile?.username}${randomCode}`;
+  
     const bankId = "970415";
     const accountNo = "108881732352";
     const template = "print";
 
     return {
-      url: `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${totalAmount}&addInfo=${description}&accountName=${accountNameTK}`,
-      description,
+      url: `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${totalAmount}&addInfo=${descriptionn}&accountName=${accountNameTK}`,
+      // url: `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${totalAmount}&addInfo=<DESCRIPTION>&accountName=<ACCOUNT_NAME>`
     };
   };
 

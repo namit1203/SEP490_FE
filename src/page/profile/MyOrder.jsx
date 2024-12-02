@@ -1,9 +1,12 @@
 import { Button, Table } from "antd";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { checkLoginToken } from "../../utils";
+
 export default function MyOrder() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     setLoading(true);
@@ -67,7 +70,7 @@ export default function MyOrder() {
         <Button
           type="primary"
           onClick={() => handleAction(record.id)}
-          htmlType=""
+          htmlType="button"
         >
           Chi tiết
         </Button>
@@ -76,7 +79,8 @@ export default function MyOrder() {
   ];
 
   const handleAction = (id) => {
-    console.log(`Action clicked for ID: ${id}`);
+    // Navigate to the ticket-detail page with the selected ID
+    navigate(`/ticket-detail/${id}`);
   };
 
   return (
