@@ -7,10 +7,11 @@ export default function OptionTrip({ data }) {
   const startPointArr = useAppSelector((state) => state.trips?.startPointArr);
   const endPointArr = useAppSelector((state) => state.trips?.endPointArr);
   const countSeat = useAppSelector((state) => state.trips?.countseat);
+  const quantity = localStorage.getItem("quantity");
   const navigate = useNavigate();
 
   const handleTransaction = () => {
-    if (countSeat === 0) {
+    if (countSeat === 0 || quantity > countSeat) {
       return message.error("Không còn chỗ trống cho chuyến xe này!");
     }
     localStorage.setItem("priceTrip", data?.listVehicle[0]?.price);
